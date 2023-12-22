@@ -1,16 +1,25 @@
 {
-  "name": "django-ecommerce",
-  "version": "1.0.0",
-  "description": "A django ecommerce website built with bootstrap and Django",
-  "scripts": {
-    "dev": "vite"
-  },
-  "author": "mostafaei2002",
-  "license": "ISC",
-  "devDependencies": {
-    "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.2",
-    "sass": "^1.69.5",
-    "vite": "^5.0.10"
-  }
+    "name": "django-ecommerce",
+    "version": "1.0.0",
+    "description": "A django ecommerce website built with bootstrap and Django",
+    "scripts": {
+        "build": "webpack --config frontend/webpack.config.js",
+        "watch": "webpack --config frontend/webpack.config.js --watch"
+    },
+    "author": "mostafaei2002",
+    "license": "ISC",
+    "devDependencies": {
+        "@popperjs/core": "^2.11.8",
+        "autoprefixer": "^10.4.16",
+        "bootstrap": "^5.3.2",
+        "css-loader": "^6.8.1",
+        "glob": "^10.3.10",
+        "mini-css-extract-plugin": "^2.7.6",
+        "postcss-loader": "^7.3.3",
+        "sass": "^1.69.5",
+        "sass-loader": "^13.3.2",
+        "style-loader": "^3.3.3",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4"
+    }
 }
