@@ -1,14 +1,24 @@
 {% load static%}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testing Bootstrap 5</title>
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+    
+    {% comment %} Fonts {% endcomment %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    {% comment %} Styles {% endcomment %}
     <link rel="stylesheet" href="{% static "bootstrap.css" %}">
+    
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <h1>Hello Welcome to my website built with boostrap</h1>
+    {% block body %}{% endblock %}
 </body>
 </html>
