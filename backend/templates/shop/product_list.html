@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Our Products{% endblock %}
+
+{% block body %}
+{% include "shop/includes/navbar.html" %}
+
+{% comment %} Product {% endcomment %}
+<section class="py-5 min-vh-100">
+    <div class="container">
+        <h2 class="my-3">Our Products</h2>
+        <div class="row">
+            {% for product in products_list %}
+            <div class="col-md-3">
+                <div class="card text-start h-100">
+                    <img class="card-img-top" src="{{product.image.url}}" alt="{{product.name}}" />
+                    <div class="card-body">
+                        <h4 class="card-title">{{product.name}}</h4>
+                    </div>
+                    <a class="btn btn-outline-dark m-2" href="#">Purchase</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{% include "shop/includes/footer.html" %}
+{% endblock %}

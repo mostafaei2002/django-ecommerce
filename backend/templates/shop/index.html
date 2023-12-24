@@ -11,12 +11,13 @@
         <div class="row">
             {% for product in top_selling_products%}
             <div class="col-md-3">
-                <div class="card text-start">
+                <div class="card text-start h-100">
                     <img class="card-img-top" src="{{ product.image.url }}" alt="Title" />
-                    <div class="card-body">
-                        <h4 class="card-title">{{product.name}}</h4>
-                        <a class="btn btn-outline-dark" href="#">Purchase</a>
+                    <div class="card-body h-100">
+                        <h4 class="card-title mb-auto">{{product.name}}</h4>
                     </div>
+
+                    <a class="btn btn-outline-dark m-2" href="#">Purchase</a>
                 </div>
             </div>
             {% endfor %}
@@ -28,12 +29,12 @@
         <div class="row">
             {% for product in top_selling_products%}
             <div class="col-md-3">
-                <div class="card text-start">
+                <div class="card text-start h-100">
                     <img class="card-img-top" src="{{ product.image.url }}" alt="Title" />
                     <div class="card-body">
                         <h4 class="card-title">{{product.name}}</h4>
-                        <a class="btn btn-outline-dark" href="#">Purchase</a>
                     </div>
+                    <a class="btn btn-outline-dark m-2" href="#">Purchase</a>
                 </div>
             </div>
             {% endfor %}

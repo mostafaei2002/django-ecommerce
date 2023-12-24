@@ -30,9 +30,10 @@ class Product(models.Model):
     description = models.TextField(max_length=2000)
     price = models.PositiveIntegerField()
     stock_quantity = models.PositiveIntegerField()
-    sales = models.PositiveIntegerField()
+    sales = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to="products")
     created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(unique=True)
 
 
 class ProductReview(models.Model):

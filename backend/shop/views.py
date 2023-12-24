@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import View
+from django.views.generic import ListView
 
 from .models import Product
 
@@ -22,5 +23,8 @@ class IndexView(View):
             },
         )
 
-    def post(request):
-        pass
+
+class ProductList(ListView):
+    template_name = "shop/product_list.html"
+    model = Product
+    context_object_name = "products_list"
