@@ -31,13 +31,7 @@ class Product(models.Model):
     price = models.PositiveIntegerField()
     stock_quantity = models.PositiveIntegerField()
     sales = models.PositiveIntegerField()
-
-
-class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="images"
-    )
-    image = models.ImageField(upload_to="product_images/")
+    image = models.ImageField(upload_to="products")
 
 
 class ProductReview(models.Model):
