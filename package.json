@@ -13,7 +13,10 @@
         "autoprefixer": "^10.4.16",
         "bootstrap": "^5.3.2",
         "css-loader": "^6.8.1",
+<<<<<<< HEAD
         "glob": "^10.3.10",
+=======
+>>>>>>> 56129815380fada3b396d792a737910fe5143734
         "mini-css-extract-plugin": "^2.7.6",
         "postcss-loader": "^7.3.3",
         "sass": "^1.69.5",

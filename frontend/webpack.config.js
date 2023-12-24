@@ -3,6 +3,7 @@
 const path = require("path");
 const autoprefixer = require("autoprefixer");
 const miniCssExtractPlugin = require("mini-css-extract-plugin");
+<<<<<<< HEAD
 const glob = require("glob");
 
 const getAllEntryPoints = () => {
@@ -24,6 +25,14 @@ module.exports = {
     entry: getAllEntryPoints(),
     output: {
         filename: "[name].js",
+=======
+
+module.exports = {
+    mode: "development",
+    entry: "./frontend/js/main.js",
+    output: {
+        filename: "main.js",
+>>>>>>> 56129815380fada3b396d792a737910fe5143734
         path: path.resolve(__dirname, "../backend/static"),
     },
     plugins: [new miniCssExtractPlugin()],
