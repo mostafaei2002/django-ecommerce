@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{product.name}}{% endblock %}
+
+{% block body %}
+{% include "shop/includes/navbar.html" %}
+<article class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="shadow w-100 row rounded-2 overflow-hidden">
+                <div class="col-lg-6 p-0 order-lg-last">
+                    <img class="img-fluid" src="{{product.image.url}}"  alt="">
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex flex-column p-5 h-100">
+                        <h1 class="my-4">{{product.name|title}}</h1>
+                        <p>{{product.description}} </p>
+                        <div class="d-grid mt-auto"><a class="btn btn-lg btn-outline-dark align-self-end" href="#">Add to Cart</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% include "shop/includes/footer.html" %}
+{% endblock %}
