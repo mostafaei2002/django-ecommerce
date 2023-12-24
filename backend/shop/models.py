@@ -32,6 +32,7 @@ class Product(models.Model):
     stock_quantity = models.PositiveIntegerField()
     sales = models.PositiveIntegerField()
     image = models.ImageField(upload_to="products")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ProductReview(models.Model):

@@ -7,7 +7,24 @@
 <div class="container">
     {% comment %} Top selling {% endcomment %}
     <section class="py-5">
-        <h2>Our Top Selling Products</h2>
+        <h2 class="my-4">Our Top Selling Products</h2>
+        <div class="row">
+            {% for product in top_selling_products%}
+            <div class="col-md-3">
+                <div class="card text-start">
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="Title" />
+                    <div class="card-body">
+                        <h4 class="card-title">{{product.name}}</h4>
+                        <a class="btn btn-outline-dark" href="#">Purchase</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <section class="py-5">
+        <h2 class="my-4">Our Latest Products</h2>
         <div class="row">
             {% for product in top_selling_products%}
             <div class="col-md-3">
@@ -23,4 +40,6 @@
         </div>
     </section>
 </div>
+
+{% include "shop/includes/footer.html" %}
 {% endblock %}
