@@ -20,6 +20,9 @@ class User(AbstractUser):
 
     bio = models.TextField(max_length=500)
 
+    def __str__(self):
+        return self.username
+
 
 # Product
 class Category(models.Model):
@@ -32,6 +35,13 @@ class Category(models.Model):
     parent_category = models.ForeignKey(
         "self", on_delete=models.CASCADE, related_name="sub_categories", null=True
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "category"
+        verbose_name_plural = "categories"
 
 
 class Product(models.Model):
@@ -47,6 +57,9 @@ class Product(models.Model):
         Category, on_delete=models.CASCADE, related_name="products"
     )
 
+    def __str__(self):
+        return self.title
+
 
 class Review(models.Model):
     rating = models.PositiveIntegerField(
@@ -59,6 +72,9 @@ class Review(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="reviews"
     )
+
+    def __str__(self):
+        return f"{self.user} on {self.product}"
 
 
 # Carts
@@ -83,6 +99,9 @@ class CartItem(models.Model):
 
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.quantity} {self.product}"
 
 
 # Orders
