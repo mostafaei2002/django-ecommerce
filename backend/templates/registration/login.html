@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<section class="py-5">
+<div class="container d-flex justify-content-center align-items-center" style="height:70vh;">
+    <div>
+        <h1 class="mb-4">Login</h1>
+        <form action="" method="post">
+            {{form|crispy}}
+            <button class="btn btn-primary ms-auto mt-3">Login</button>
+        </form>
+    </div>
+</div>
+</section>
+{% endblock %}
