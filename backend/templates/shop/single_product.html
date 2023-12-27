@@ -15,7 +15,7 @@
                     <div class="d-flex flex-column p-5 h-100">
                         <h1 class="my-4">{{product.name|title}}</h1>
                         <p>{{product.description}} </p>
-                        <div class="d-grid mt-auto"><a class="btn btn-lg btn-outline-dark align-self-end" href="#">Add to Cart</a></div>
+                        <div class="d-grid mt-auto"><a class="btn btn-lg btn-outline-dark align-self-end" href="{% url "add-to-cart" product.slug %}">Add to Cart</a></div>
                     </div>
                 </div>
             </div>
