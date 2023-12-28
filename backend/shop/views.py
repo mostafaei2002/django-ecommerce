@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic import DetailView, ListView
 
 from .forms import UserEditForm
+from .models import Category, Product, User
 
 # Create your views here.
 
@@ -13,12 +14,17 @@ from .forms import UserEditForm
 # Index & Product Views
 class IndexView(View):
     def get(self, request):
-        # Pass in some Categories
-        # Pass in Top Selling products
-        # Pass in latest products
-        # Pass in some recommended products for logged in users
+        top_level_categories = Category.objects.filter(parent_category=None)
+        latest_products = Product.objects.all().order_by("-updated_at")[:8]
 
-        pass
+        # TODO Pass in Top Selling products
+        # TODO Pass in some recommended products for logged in users
+
+        return render(
+            request,
+            "shop/front_page.html",
+            {"latest_products": latest_products, "categories": top_level_categories},
+        )
 
     def post(self, request):
         pass

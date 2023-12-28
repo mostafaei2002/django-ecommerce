@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Mcommerce - A new Modern Solution{% endblock %}
+
+{% block body %}
+<main>
+    <section id="categories" class="py-5">
+        <div class="container">
+            <h2 class="fw-light  text-center">You might be interested in</h2>
+            
+            {% comment %} Some Categories go here {% endcomment %}
+            <div class="row">
+                {% comment %} TODO Product category Icon with link Goes below {% endcomment %}
+                {% for category in categories %}
+                    <div class="col-4 col-md-2">
+                        <a href="#" class="text-decoration-none">
+                            <div class="d-flex flex-column justify-content-center align-items-center">
+                                <img class="img-fluid rounded-circle" src="{{category.image.url}}" alt="{{category.name}}" style="height: 8rem;">
+                                <h4 class="text-dark">{{category.name|title}}</h4>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+            
+    <section id="latest-products" class="py-5">
+        <div class="container">
+            <h2>Our Latest Products</h2>
+            
+            {% comment %} TODO Latest products go here {% endcomment %}
+            <div class="row">
+            </div>
+        </div>
+    </section>
+
+</main>
+{% endblock %}

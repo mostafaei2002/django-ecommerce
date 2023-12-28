@@ -2,11 +2,6 @@
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./frontend/scss/bootstrap.scss ***!
   \*********************************************************************************************************************************************************************************************/
 @charset "UTF-8";
-/*!
- * Bootstrap  v5.3.2 (https://getbootstrap.com/)
- * Copyright 2011-2023 The Bootstrap Authors
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
 :root,
 [data-bs-theme=light] {
   --bs-blue: #0d6efd;
