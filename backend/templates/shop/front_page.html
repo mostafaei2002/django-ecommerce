@@ -34,13 +34,13 @@
                 {% for product in latest_products %}
                     <div class="col-md-3">
                         <a href="{% url "single_product" product.slug %}" class="text-decoration-none">
-                            <div class="card h-100">
+                            <article class="card h-100">
                                 <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
                                 <div class="card-body">
                                     <h4 class="card-title">{{ product.title}}</h4>
                                     <span class="fs-1 fw-bold">${{ product.price}}</span>
                                 </div>
-                            </div>
+                            </article>
                         </a>
                     </div>
                 {% endfor %}

@@ -32,7 +32,10 @@ class IndexView(View):
 
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
-    pass
+    template_name = "shop/product_list.html"
+    model = Product
+    paginate_by = 12
+    context_object_name = "product_list"
 
 
 class ProductDetailView(DetailView):
