@@ -41,6 +41,7 @@ class ProductDetailView(DetailView):
 
 
 class ProductCategoryListView(ListView):
+    # TODO Pass in Categories in the slug view
     pass
 
 
