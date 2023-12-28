@@ -7,8 +7,6 @@ from django.db import models
 class User(AbstractUser):
     phone = models.CharField(
         validators=[
-            MinValueValidator(5),
-            MaxValueValidator(15),
             RegexValidator("[0-9]+"),
         ],
         unique=True,
@@ -18,7 +16,7 @@ class User(AbstractUser):
     email_validated = models.BooleanField(default=False)
     phone_validated = models.BooleanField(default=False)
 
-    bio = models.TextField(max_length=500)
+    bio = models.TextField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -26,14 +24,19 @@ class User(AbstractUser):
 
 # Product
 class Category(models.Model):
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="categories")
     description = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     parent_category = models.ForeignKey(
-        "self", on_delete=models.CASCADE, related_name="sub_categories", null=True
+        "self",
+        on_delete=models.CASCADE,
+        related_name="sub_categories",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -46,6 +49,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True)
     image = models.ImageField(upload_to="products")
     summary = models.TextField(max_length=500, blank=True, null=True)
     description = models.TextField(max_length=20000, blank=True, null=True)

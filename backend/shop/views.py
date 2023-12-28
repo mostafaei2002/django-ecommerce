@@ -1,8 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
+
+from .forms import UserEditForm
 
 # Create your views here.
 
@@ -10,6 +13,11 @@ from django.views.generic import DetailView, ListView
 # Index & Product Views
 class IndexView(View):
     def get(self, request):
+        # Pass in some Categories
+        # Pass in Top Selling products
+        # Pass in latest products
+        # Pass in some recommended products for logged in users
+
         pass
 
     def post(self, request):
@@ -17,14 +25,16 @@ class IndexView(View):
 
 
 class ProductListView(ListView):
-    pass
-
-
-class ProductCategoryListView(ListView):
+    # Pass in products ordered by top selling by default
     pass
 
 
 class ProductDetailView(DetailView):
+    # Single product Page
+    pass
+
+
+class ProductCategoryListView(ListView):
     pass
 
 
@@ -33,7 +43,7 @@ class CartView(View):
     pass
 
 
-# Orders
+# Order Views
 class OrderListView(ListView):
     pass
 
@@ -43,9 +53,25 @@ class OrderView(View):
 
 
 # User Profile
-class UserProfileView(View):
+class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        pass
+        print(request.user.first_name)
+        user_form = UserEditForm(
+            initial={
+                "avatar": request.user.avatar,
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "phone": request.user.phone,
+                "bio": request.user.bio,
+            }
+        )
+
+        return render(request, "shop/user_profile.html", {"form": user_form})
 
     def post(self, request):
-        pass
+        user_form = UserEditForm(request.POST)
+
+        if user_form.is_valid():
+            user_form.save()
+
+        return render(request, "shop/user_profile.html", {"form": user_form})

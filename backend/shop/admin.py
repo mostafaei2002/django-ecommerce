@@ -7,24 +7,25 @@ from .models import Category, Order, Product, Review, User
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name"]
     prepopulated_fields = {"slug": ["name"]}
-    fields = ["name", "slug", "description", "parent_category"]
+    fields = ["name", "image", "slug", "description", "parent_category"]
 
 
 @admin.register(Product)
-class CategoryAdmin(admin.ModelAdmin):
-    pass
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ["title", "price", "updated_at", "categories"]
+    prepopulated_fields = {"slug": ["title"]}
 
 
 @admin.register(Review)
-class CategoryAdmin(admin.ModelAdmin):
+class ReviewAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(Order)
-class CategoryAdmin(admin.ModelAdmin):
+class OrderAdmin(admin.ModelAdmin):
     pass
 
 
 @admin.register(User)
-class CategoryAdmin(admin.ModelAdmin):
-    pass
+class UserAdmin(admin.ModelAdmin):
+    list_display = ["username", "first_name", "last_name"]
