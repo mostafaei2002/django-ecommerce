@@ -1,8 +1,8 @@
-<nav
-    class="navbar navbar-expand-lg navbar-light bg-light"
->
+<nav class="navbar navbar-expand-md navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="/">MCommerce</a>
+        <a class="navbar-brand text-primary fw-bold fs-5" href="#">MCommerce</a>
+        
+        {% comment %} Toggle Button {% endcomment %}
         <button
             class="navbar-toggler d-lg-none"
             type="button"
@@ -14,15 +14,58 @@
         >
             <span class="navbar-toggler-icon"></span>
         </button>
+        
+        {% comment %} Collapsible nav {% endcomment %}
         <div class="collapse navbar-collapse" id="collapsibleNavId">
-            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">Home</a>
+            <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+
+                {% comment %} DropDown {% endcomment %}
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="dropdownId"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Categories
+                        </a>
+                    <div
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownId"
+                    >
+                    {% comment %} TODO Top Level Category Items Go Here {% endcomment %}
+                        <a class="dropdown-item" href="#"
+                            >Action 1</a
+                        >
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Link</a>
-                </li>
+
             </ul>
+
+            {% comment %} Search Bar {% endcomment %}
+            <form class="d-flex my-2 my-lg-0">
+                <input
+                    class="form-control me-sm-2"
+                    type="text"
+                    placeholder="Search"
+                />
+                <button
+                    class="btn btn-outline-success my-2 my-sm-0"
+                    type="submit"
+                >
+                    Search
+                </button>
+            </form>
+            
+            {% comment %} Other navbar Items Go here {% endcomment %}
+                        
         </div>
     </div>
 </nav>
