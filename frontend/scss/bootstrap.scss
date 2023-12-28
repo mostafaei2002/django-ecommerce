@@ -18,6 +18,8 @@ $spacers: (
     8: $spacer * 12,
 );
 
+$headings-margin-bottom: $spacer * 1.5;
+
 // Configuration
 @import "../../node_modules/bootstrap/scss/functions";
 @import "../../node_modules/bootstrap/scss/variables";
