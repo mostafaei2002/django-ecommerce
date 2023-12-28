@@ -27,7 +27,10 @@
             
     <section id="latest-products" class="pt-5 pb-6">
         <div class="container">
-            <h2 class="fw-bold">Our Latest Products</h2>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold mb-0">Our Latest Products</h2>
+                <a href="{% url "product_list" %}" class="btn btn-outline-dark">See More</a>
+            </div>
             
             {% comment %} TODO Latest products go here {% endcomment %}
             <div class="row g-5">
