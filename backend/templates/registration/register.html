@@ -1,17 +1,16 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block body %}
 <section class="py-5">
 <div class="container d-flex justify-content-center" style="height:70vh;">
     <div class="position-relative" style="top: 20%;">
-        <h1 class="mb-5">Login</h1>
+        <h1 class="mb-5">Register</h1>
         <form action="" method="post">
             {% csrf_token %}
             {{form|crispy}}
-            <div class="d-grid"><button class="btn btn-outline-dark">Login</button></div>
+            <div class="d-grid"><button class="btn btn-outline-dark">Register</button></div>
         </form>
     </div>
 </div>
