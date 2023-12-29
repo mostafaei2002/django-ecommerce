@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
 
-from .forms import UserEditForm
+from .forms import ReviewForm, UserEditForm
 from .models import Category, Product, User
 
 # Create your views here.
@@ -39,13 +39,31 @@ class ProductListView(ListView):
     context_object_name = "product_list"
 
 
-class ProductDetailView(DetailView):
-    # Single product Page
-    pass
+class ProductDetailView(View):
+    def get(self, request, slug):
+        product = Product.objects.get(slug=slug)
+        all_reviews = product.reviews.all()
+        review_form = ReviewForm()
+
+        return render(
+            request,
+            "shop/single_product.html",
+            {"product": product, "reviews": all_reviews, "review_form": review_form},
+        )
+
+    def post(self, request, slug):
+        # TODO submit reviews
+        user = self.request.user
+        product = Product.objects.get(slug=slug)
+        review_form = ReviewForm(self.request.POST)
+
+        if review_form.is_valid():
+            pass
+
+        return HttpResponseRedirect(reverse("products", slug))
 
 
 class ProductCategoryListView(ListView):
-    # TODO Pass in Categories in the slug view
     template_name = "shop/product_list.html"
     paginate_by = 10
     context_object_name = "product_list"
