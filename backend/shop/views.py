@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -45,7 +46,21 @@ class ProductDetailView(DetailView):
 
 class ProductCategoryListView(ListView):
     # TODO Pass in Categories in the slug view
-    pass
+    template_name = "shop/product_list.html"
+    paginate_by = 10
+    context_object_name = "product_list"
+
+    def get_queryset(self):
+        self.slug = self.kwargs["slug"]
+        return Product.objects.filter(
+            Q(categories__slug=self.slug)
+            | Q(categories__parent_category__slug=self.slug)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.slug
+        return context
 
 
 # Cart View
