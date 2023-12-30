@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
@@ -52,15 +52,17 @@ class ProductDetailView(View):
         )
 
     def post(self, request, slug):
-        # TODO submit reviews
         user = self.request.user
         product = Product.objects.get(slug=slug)
         review_form = ReviewForm(self.request.POST)
 
         if review_form.is_valid():
-            pass
+            new_review = review_form.save(commit=False)
+            new_review.user = user
+            new_review.product = product
+            new_review.save()
 
-        return HttpResponseRedirect(reverse("products", slug))
+        return redirect("single_product", slug=slug)
 
 
 class ProductCategoryListView(ListView):
