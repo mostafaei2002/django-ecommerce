@@ -15,7 +15,7 @@
   \***************************************/
 /***/ (() => {
 
-eval("const navTabs = document.querySelector(\".nav-tabs\");\nconst tabBtns = document.querySelectorAll(\".nav-tabs .nav-link\");\nconst tabIDs = [\"tab-description\", \"tab-reviews\"];\n\nnavTabs.addEventListener(\"click\", (e) => {\n    const targetTabBtn = e.target.closest(\".nav-link\");\n    console.log(targetTabBtn);\n    tabBtns.forEach((tab) => tab.classList.remove(\"active\"));\n\n    targetTabBtn.classList.add(\"active\");\n    const targetTabID = targetTabBtn.dataset.target;\n    console.log(targetTabID);\n\n    tabIDs.forEach((tabID) => {\n        const tab = document.getElementById(tabID);\n        tab.classList.add(\"d-none\");\n    });\n\n    const targetTab = document.getElementById(targetTabID);\n    targetTab.classList.remove(\"d-none\");\n});\n\n\n//# sourceURL=webpack://django-ecommerce/./frontend/js/single_product.js?");
+eval("// const triggerTabList = document.querySelectorAll(\"#productTabs button\");\n// triggerTabList.forEach((triggerEl) => {\n//     const tabTrigger = new bootstrap.Tab(triggerEl);\n\n//     triggerEl.addEventListener(\"click\", (event) => {\n//         event.preventDefault();\n//         tabTrigger.show();\n//     });\n// });\n\n\n//# sourceURL=webpack://django-ecommerce/./frontend/js/single_product.js?");
 
 /***/ })
 
