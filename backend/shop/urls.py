@@ -15,6 +15,9 @@ urlpatterns = [
         views.ProductDetailView.as_view(),
         name="single_product",
     ),
+    path(
+        "products/add-to-cart/<int:id>", views.CartAddView.as_view(), name="add-to-cart"
+    ),
     path("accounts/register", views.UserRegisterView.as_view(), name="register"),
     path("accounts/profile/", views.UserProfileView.as_view(), name="profile"),
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 
 from .models import Review, User
 
@@ -42,3 +42,7 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ["rating", "comment"]
+
+
+class ProductQuantityForm(forms.Form):
+    quantity = forms.IntegerField(validators=[MinValueValidator], initial=1)

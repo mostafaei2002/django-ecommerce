@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
 
-from .forms import ReviewForm, UserEditForm, UserRegisterForm
-from .models import Category, Product, User
+from .forms import ProductQuantityForm, ReviewForm, UserEditForm, UserRegisterForm
+from .models import Cart, CartItem, Category, Product, User
 
 # Create your views here.
 
@@ -45,11 +45,17 @@ class ProductDetailView(View):
         product = Product.objects.get(slug=slug)
         all_reviews = product.reviews.all()
         review_form = ReviewForm()
+        quantity_form = ProductQuantityForm()
 
         return render(
             request,
             "shop/single_product.html",
-            {"product": product, "reviews": all_reviews, "review_form": review_form},
+            {
+                "product": product,
+                "reviews": all_reviews,
+                "review_form": review_form,
+                "quantity_form": quantity_form,
+            },
         )
 
     def post(self, request, slug):
@@ -82,20 +88,6 @@ class ProductCategoryListView(ListView):
         context = super().get_context_data(**kwargs)
         context["category"] = self.slug
         return context
-
-
-# Cart View
-class CartView(View):
-    pass
-
-
-# Order Views
-class OrderListView(ListView):
-    pass
-
-
-class OrderView(View):
-    pass
 
 
 # User Profile
@@ -147,3 +139,50 @@ class UserRegisterView(View):
             return redirect("login")
 
         return render(request, "registration/register.html", {"form": register_form})
+
+
+# Cart View
+class CartAddView(View):
+    # TODO If not logged in save data to session
+    # TODO If logged in save data to database
+    def post(self, request, id):
+        product_quantity = request.POST["quantity"]
+        product = Product.objects.get(pk=id)
+        user = request.user
+
+        if user.is_authenticated:
+            active_cart = user.carts.get(status="active")
+            if not active_cart:
+                active_cart = Cart(created_by=user, status="active")
+                active_cart.save()
+
+        else:
+            active_cart_id = request.session.get("active_cart_it")
+            if active_cart_id:
+                active_cart = Cart.objects.get(pk=active_cart_id)
+            else:
+                active_cart = Cart(status="active")
+                active_cart.save()
+
+        cart_item = CartItem(
+            product=product,
+            quantity=product_quantity,
+            price=product_quantity * product.price,
+            cart=active_cart,
+        )
+        cart_item.save()
+
+        return redirect(request.META["HTTP_REFERER"])
+
+
+class CartOrderView(View):
+    pass
+
+
+# Order Views
+class OrderListView(ListView):
+    pass
+
+
+class OrderView(View):
+    pass
