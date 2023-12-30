@@ -147,3 +147,6 @@ AUTH_USER_MODEL = "shop.User"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Authentication
+LOGOUT_REDIRECT_URL = "/accounts/login/"

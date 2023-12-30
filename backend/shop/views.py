@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
 
-from .forms import ReviewForm, UserEditForm
+from .forms import ReviewForm, UserEditForm, UserRegisterForm
 from .models import Category, Product, User
 
 # Create your views here.
@@ -41,6 +41,7 @@ class ProductListView(ListView):
 
 class ProductDetailView(View):
     def get(self, request, slug):
+        # TODO pass in review avg and count
         product = Product.objects.get(slug=slug)
         all_reviews = product.reviews.all()
         review_form = ReviewForm()
@@ -120,3 +121,29 @@ class UserProfileView(LoginRequiredMixin, View):
             user_form.save()
 
         return render(request, "shop/user_profile.html", {"form": user_form})
+
+
+class UserRegisterView(View):
+    def get(self, request):
+        register_form = UserRegisterForm()
+
+        return render(request, "registration/register.html", {"form": register_form})
+
+    def post(self, request):
+        register_form = UserRegisterForm(request.POST)
+
+        if register_form.is_valid():
+            form_data = register_form.clean()
+
+            new_user = User.objects.create_user(
+                first_name=form_data["first_name"],
+                last_name=form_data["last_name"],
+                username=form_data["username"],
+                email=form_data["email"],
+                phone=form_data["phone"],
+                password=form_data["password"],
+            )
+
+            return redirect("login")
+
+        return render(request, "registration/register.html", {"form": register_form})
