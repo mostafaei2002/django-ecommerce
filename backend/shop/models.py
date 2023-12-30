@@ -93,7 +93,9 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="carts")
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="carts", null=True
+    )
 
 
 class CartItem(models.Model):
