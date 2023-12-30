@@ -26,9 +26,13 @@
                                 <p class="lead mt-5">{{ product.summary }}</p>
                             </div>
                             
-                            <div class="d-grid">
-                                <a class="btn btn-lg btn-outline-dark px-4" href="#">Add To Cart</a>
-                            </div>
+                            <form action="{% url "add-to-cart" product.id%}">
+                                {% csrf_token %}
+                                {{quantity_form|crispy}}
+                                <div class="d-grid">
+                                    <button class="btn btn-lg btn-outline-dark px-4">Add To Cart</button>
+                                </div>
+                                </form>
                         </div>
                     </div>
                 </div>
@@ -37,6 +41,7 @@
             {% comment %} Tabs {% endcomment %}
             <!-- Nav tabs -->
             <ul class="nav nav-tabs my-5 mx-4" id="productTabs" role="tablist">
+                {% if product.description %}
                 <li class="nav-item" role="presentation">
                     <button
                         class="nav-link active"
@@ -49,9 +54,10 @@
                         Description
                     </button>
                 </li>
+                {% endif %} 
                 <li class="nav-item" role="presentation">
                     <button
-                        class="nav-link"
+                        class="nav-link {% if not product.description %}active{% endif %}"
                         id="review-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#reviews"
@@ -67,6 +73,7 @@
             
             <!-- Tab panes -->
             <div class="tab-content mx-5">
+                {% if product.description %}
                 <div
                     class="tab-pane fade show active"
                     id="description"
@@ -78,9 +85,10 @@
                         {{ product.description|linebreaks }}
                     {% endif %}
                 </div>
+                {% endif %}
 
                 <div
-                    class="tab-pane fade"
+                    class="tab-pane fade {% if not product.description %}show active{% endif %}"
                     id="reviews"
                     role="tabpanel"
                 >
