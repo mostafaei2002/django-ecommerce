@@ -12,6 +12,7 @@ from .forms import ProductQuantityForm, ReviewForm, UserEditForm, UserRegisterFo
 from .models import Cart, CartItem, Category, Product, User
 
 # Create your views here.
+# TODO Refactor Shopping Cart into a new app & Rename Apps
 
 
 def handle_carts(request, user):
@@ -212,6 +213,7 @@ class UserLoginView(View):
 # Cart View
 class CartAddView(View):
     # TODO Handle if Item is already in shopping cart
+    # TODO add in user authentication
     def post(self, request, id):
         product_quantity = int(request.POST["quantity"])
         product = Product.objects.get(pk=id)
@@ -251,8 +253,19 @@ class CartAddView(View):
         return redirect(request.META["HTTP_REFERER"])
 
 
-class CartOrderView(View):
-    pass
+class CartDeleteView(View):
+    # TODO add in user authentication
+    def post(self, request, id):
+        cart_item = CartItem.objects.get(pk=id)
+        cart_item.delete()
+
+        return redirect(request.META["HTTP_REFERER"])
+
+
+class CartEditQuantityView(View):
+    # TODO Implement interactive quantity modification with vanilla JS
+    def post(self, request, id):
+        pass
 
 
 # Order Views
