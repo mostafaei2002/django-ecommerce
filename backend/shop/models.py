@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 
 
+# TODO change price fields into DecimalField for more accuracy
 # Extend default User Model
 class User(AbstractUser):
     phone = models.CharField(
@@ -53,7 +54,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="products")
     summary = models.TextField(max_length=500, blank=True, null=True)
     description = models.TextField(max_length=20000, blank=True, null=True)
-    price = models.FloatField(max_length=10)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -100,7 +101,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    price = models.FloatField(max_length=50)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -109,6 +110,10 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} {self.product}"
+
+    def save(self, *args, **kwargs):
+        self.price = self.quantity * self.product.price
+        super().save(*args, **kwargs)
 
 
 # Orders
@@ -122,7 +127,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    price = models.FloatField(max_length=50)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
