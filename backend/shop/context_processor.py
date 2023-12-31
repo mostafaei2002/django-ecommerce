@@ -3,7 +3,10 @@ from .models import Cart
 
 def cart_context(request):
     user = request.user
-    active_cart_id = request.session.get("active_cart_id")
+    try:
+        active_cart_id = request.session.get("active_cart_id")
+    except Exception:
+        active_cart_id = None
 
     if user.is_authenticated:
         try:

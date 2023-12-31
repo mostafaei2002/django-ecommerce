@@ -37,19 +37,19 @@ def handle_carts(request, user):
 
     elif old_cart and active_cart:
         old_cart_items = old_cart.items.all()
-        old_cart.status = "logged_in"
-        old_cart.save()
 
-        # TODO What if the item is in both carts?
         for item in old_cart_items:
-            new_cart_item = CartItem.objects.create(
-                price=item.price,
-                product=item.product,
-                quantity=item.quantity,
-                cart=active_cart,
-            )
+            try:
+                existing_active_item = active_cart.items.get(product=item.product)
+                existing_active_item.quantity += item.quantity
+                existing_active_item.save()
+            except Exception:
+                new_item = CartItem(
+                    product=item.product, quantity=item.quantity, cart=active_cart
+                )
 
-        active_cart.save()
+    del request.session["active_cart_id"]
+    old_cart.delete()
 
 
 # Index & Product Views
@@ -211,13 +211,13 @@ class UserLoginView(View):
 
 # Cart View
 class CartAddView(View):
-    # TODO If not logged in save data to session
-    # TODO If logged in save data to database
+    # TODO Handle if Item is already in shopping cart
     def post(self, request, id):
         product_quantity = int(request.POST["quantity"])
         product = Product.objects.get(pk=id)
         user = request.user
 
+        # Get the active cart for authenticated and non-authenticated users
         if user.is_authenticated:
             try:
                 active_cart = user.carts.get(status="active")
@@ -234,12 +234,18 @@ class CartAddView(View):
                 active_cart.save()
                 request.session["active_cart_id"] = active_cart.id
 
-        cart_item = CartItem(
-            product=product,
-            quantity=product_quantity,
-            price=product_quantity * product.price,
-            cart=active_cart,
-        )
+        # Add quantity if cart item already is in cart
+        try:
+            cart_item = active_cart.items.get(product=product)
+            cart_item.quantity += product_quantity
+
+        except Exception:
+            cart_item = CartItem(
+                product=product,
+                quantity=product_quantity,
+                cart=active_cart,
+            )
+
         cart_item.save()
 
         return redirect(request.META["HTTP_REFERER"])

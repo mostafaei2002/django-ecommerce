@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 
 
-# TODO change price fields into DecimalField for more accuracy
+# TODO add helper functions to models
 # Extend default User Model
 class User(AbstractUser):
     phone = models.CharField(
