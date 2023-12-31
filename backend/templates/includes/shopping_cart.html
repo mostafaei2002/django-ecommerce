@@ -16,9 +16,16 @@
         ></button>
     </div>
     <div class="offcanvas-body">
-        <p>
-            Try scrolling the rest of the page to see this option in
-            action.
-        </p>
+        <ul>
+            {% for item in cart.items.all %}
+                <li>
+                    {{item.product.title}} |
+                    {{item.quantity}} piece |
+                    {{item.product.price}}$
+                </li>
+            {% empty %}
+                <li>Your shopping cart is empty.</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>

@@ -87,6 +87,7 @@ class Cart(models.Model):
         ("active", "active"),
         ("ordered", "ordered"),
         ("abandoned", "abandoned"),
+        ("logged_in", "logged_in"),
     ]
 
     status = models.CharField(choices=CART_CHOICES, default="active")

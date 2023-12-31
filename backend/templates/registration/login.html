@@ -11,6 +11,9 @@
             <h1 class="mb-0">Login</h1>
             <a class="btn btn-outline-dark" href="{% url "register" %}">Sign Up</a>
         </div>
+        {% if error %}
+        <p class="text-danger">{{error}}</p>
+        {% endif %}
         <form action="" method="post">
             {% csrf_token %}
             {{form|crispy}}

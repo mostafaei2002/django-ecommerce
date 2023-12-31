@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,6 +12,44 @@ from .forms import ProductQuantityForm, ReviewForm, UserEditForm, UserRegisterFo
 from .models import Cart, CartItem, Category, Product, User
 
 # Create your views here.
+
+
+def handle_carts(request, user):
+    # There are 3 scenarios
+    # Old Cart && no new cart
+    # Old cart && new cart
+    # no old cart && new cart
+    old_cart_id = request.session.get("active_cart_id")
+
+    if old_cart_id:
+        old_cart = Cart.objects.get(pk=old_cart_id)
+    else:
+        old_cart = None
+
+    try:
+        active_cart = user.carts.get(status="active")
+    except Exception:
+        active_cart = None
+
+    if old_cart and not active_cart:
+        old_cart.user = user
+        old_cart.save()
+
+    elif old_cart and active_cart:
+        old_cart_items = old_cart.items.all()
+        old_cart.status = "logged_in"
+        old_cart.save()
+
+        # TODO What if the item is in both carts?
+        for item in old_cart_items:
+            new_cart_item = CartItem.objects.create(
+                price=item.price,
+                product=item.product,
+                quantity=item.quantity,
+                cart=active_cart,
+            )
+
+        active_cart.save()
 
 
 # Index & Product Views
@@ -93,7 +133,6 @@ class ProductCategoryListView(ListView):
 # User Profile
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        print(request.user.first_name)
         user_form = UserEditForm(
             initial={
                 "avatar": request.user.avatar,
@@ -141,28 +180,59 @@ class UserRegisterView(View):
         return render(request, "registration/register.html", {"form": register_form})
 
 
+class UserLoginView(View):
+    def get(self, request):
+        login_form = AuthenticationForm()
+        # breakpoint()
+        return render(request, "registration/login.html", {"form": login_form})
+
+    def post(self, request):
+        # Login & Merge old cart with new Cart
+        login_form = AuthenticationForm()
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        handle_carts(request, user)
+
+        if user is not None:
+            login(request, user)
+
+            return redirect(reverse("profile"))
+        else:
+            login_form = AuthenticationForm({"username": username, "password": ""})
+            return render(
+                request,
+                "registration/login.html",
+                context={"form": login_form, "error": "Your credentials are invalid."},
+            )
+
+
 # Cart View
 class CartAddView(View):
     # TODO If not logged in save data to session
     # TODO If logged in save data to database
     def post(self, request, id):
-        product_quantity = request.POST["quantity"]
+        product_quantity = int(request.POST["quantity"])
         product = Product.objects.get(pk=id)
         user = request.user
 
         if user.is_authenticated:
-            active_cart = user.carts.get(status="active")
-            if not active_cart:
+            try:
+                active_cart = user.carts.get(status="active")
+            except Exception:
                 active_cart = Cart(created_by=user, status="active")
                 active_cart.save()
 
         else:
-            active_cart_id = request.session.get("active_cart_it")
+            active_cart_id = request.session.get("active_cart_id")
             if active_cart_id:
                 active_cart = Cart.objects.get(pk=active_cart_id)
             else:
                 active_cart = Cart(status="active")
                 active_cart.save()
+                request.session["active_cart_id"] = active_cart.id
 
         cart_item = CartItem(
             product=product,

@@ -26,7 +26,7 @@
                                 <p class="lead mt-5">{{ product.summary }}</p>
                             </div>
                             
-                            <form action="{% url "add-to-cart" product.id%}">
+                            <form action="{% url "add-to-cart" product.id%}" method="post">
                                 {% csrf_token %}
                                 {{quantity_form|crispy}}
                                 <div class="d-grid">
@@ -104,7 +104,7 @@
                                 </form>
                             {% else %}
                                 <p>Login in to submit a review.</p>
-                                <a class="btn btn-outline-dark" href="{% url "login" %}"></a>
+                                <div><a class="btn btn-outline-dark mt-3" href="{% url "login" %}">Login</a></div>
                             {% endif %}
                         </div>
 

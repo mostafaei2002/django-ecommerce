@@ -18,6 +18,7 @@ urlpatterns = [
     path(
         "products/add-to-cart/<int:id>", views.CartAddView.as_view(), name="add-to-cart"
     ),
-    path("accounts/register", views.UserRegisterView.as_view(), name="register"),
+    path("accounts/register/", views.UserRegisterView.as_view(), name="register"),
+    path("accounts/login/", views.UserLoginView.as_view(), name="login"),
     path("accounts/profile/", views.UserProfileView.as_view(), name="profile"),
 ]
