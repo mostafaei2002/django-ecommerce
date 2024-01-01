@@ -88,7 +88,6 @@ class Cart(models.Model):
         ("active", "active"),
         ("ordered", "ordered"),
         ("abandoned", "abandoned"),
-        ("logged_in", "logged_in"),
     ]
 
     status = models.CharField(choices=CART_CHOICES, default="active")
@@ -98,6 +97,9 @@ class Cart(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="carts", null=True
     )
+
+    def calculate_total(self):
+        return self.items.all().aggregate(models.Sum("price"))["price__sum"]
 
 
 class CartItem(models.Model):

@@ -16,20 +16,37 @@
         ></button>
     </div>
     <div class="offcanvas-body">
-        <ul>
-            {% for item in cart.items.all %}
-                <li>
-                    {{item.product.title}} |
-                    {{item.quantity}} piece |
-                    {{item.price}}$
-                    <form action="{% url "delete-from-cart" item.id %}" method="post">
-                        {% csrf_token %}
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
-                </li>
-            {% empty %}
-                <li>Your shopping cart is empty.</li>
-            {% endfor %}
-        </ul>
+        <div class="vstack justify-content-between h-100">
+            <ul class="list-group">
+                {% for item in cart.items.all %}
+                    <li class="list-group-item">
+                        <div class="hstack gap-4 align-items-center justify-content-between">
+                            <h5 class="mb-0">{{item.product.title}}</h5>
+                            <form action="{% url "delete-from-cart" item.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn-close text-danger"></button>
+                            </form>
+                        </div>
+                        <div class="hstack align-items-center justify-content-between mt-3">
+                            <input class="form-control" type="number" value="{{item.quantity}}" style="width: 25%;">
+                            <span class="fs-4">${{item.price}}</span>
+                        </div>
+                    </li>
+                {% empty %}
+                    <p>Your shopping cart is empty.</p>
+                {% endfor %}
+            </ul>
+            
+            <div>
+                <div class="mb-4 fs-4">
+                    <span>
+                        Total: ${{cart.calculate_total}}
+                    </span>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-outline-dark btn-lg">Submit Order</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
