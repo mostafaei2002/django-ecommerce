@@ -15,14 +15,13 @@ urlpatterns = [
         views.ProductDetailView.as_view(),
         name="single_product",
     ),
+    path("carts/add/<int:id>", views.CartAddView.as_view(), name="add-to-cart"),
     path(
-        "products/add-to-cart/<int:id>", views.CartAddView.as_view(), name="add-to-cart"
-    ),
-    path(
-        "products/remove-from-cart/<int:id>",
+        "carts/delete/<int:id>",
         views.CartDeleteView.as_view(),
         name="delete-from-cart",
     ),
+    path("orders/submit", views.OrderView.as_view(), name="submit-order"),
     path("accounts/register/", views.UserRegisterView.as_view(), name="register"),
     path("accounts/login/", views.UserLoginView.as_view(), name="login"),
     path("accounts/profile/", views.UserProfileView.as_view(), name="profile"),

@@ -43,8 +43,11 @@
                         Total: ${{cart.calculate_total}}
                     </span>
                 </div>
-                <div class="d-grid">
-                    <button class="btn btn-outline-dark btn-lg">Submit Order</button>
+                <div>
+                    <form action="{% url "submit-order" %}" method="post" class="d-grid">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-dark btn-lg">Submit Order</button>
+                    </form>
                 </div>
             </div>
         </div>

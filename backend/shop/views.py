@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,6 +13,8 @@ from django.views.generic import DetailView, ListView
 from .forms import ProductQuantityForm, ReviewForm, UserEditForm, UserRegisterForm
 from .models import Cart, CartItem, Category, Product, User
 
+logger = logging.getLogger("shop.views")
+
 # Create your views here.
 # TODO Refactor Shopping Cart into a new app & Rename Apps
 
@@ -22,18 +26,21 @@ def handle_carts(request, user):
     # no old cart && new cart
     old_cart_id = request.session.get("active_cart_id")
 
+    # Get old cart
     if old_cart_id:
         old_cart = Cart.objects.get(pk=old_cart_id)
     else:
         old_cart = None
 
+    # Get active cart
     try:
         active_cart = user.carts.get(status="active")
     except Exception:
         active_cart = None
 
+    # Handle carts
     if old_cart and not active_cart:
-        old_cart.user = user
+        old_cart.created_by = user
         old_cart.save()
 
     elif old_cart and active_cart:
@@ -49,8 +56,8 @@ def handle_carts(request, user):
                     product=item.product, quantity=item.quantity, cart=active_cart
                 )
 
-    del request.session["active_cart_id"]
-    old_cart.delete()
+        del request.session["active_cart_id"]
+        old_cart.delete()
 
 
 # Index & Product Views
@@ -166,17 +173,24 @@ class UserRegisterView(View):
 
         if register_form.is_valid():
             form_data = register_form.clean()
+            username = form_data["username"]
+            password = form_data["password"]
 
             new_user = User.objects.create_user(
                 first_name=form_data["first_name"],
                 last_name=form_data["last_name"],
-                username=form_data["username"],
+                username=username,
                 email=form_data["email"],
                 phone=form_data["phone"],
-                password=form_data["password"],
+                password=password,
             )
 
-            return redirect("login")
+            # Login registered user & handle cart logic
+            user = authenticate(request, username=username, password=password)
+            handle_carts(request, user)
+            if user is not None:
+                login(request, user)
+                return redirect(reverse("profile"))
 
         return render(request, "registration/register.html", {"form": register_form})
 
@@ -268,10 +282,9 @@ class CartEditQuantityView(View):
         pass
 
 
-# Order Views
-class OrderListView(ListView):
-    pass
-
-
 class OrderView(View):
-    pass
+    def post(self, request):
+        if request.user.is_authenticated:
+            pass
+        else:
+            return redirect("register")
