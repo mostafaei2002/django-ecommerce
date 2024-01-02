@@ -23,6 +23,17 @@ class User(AbstractUser):
         return self.username
 
 
+class Address(models.Model):
+    province = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    postal_code = models.CharField(validators=[RegexValidator("[0-9]{5}-[0-9]{5}")])
+    address = models.TextField(
+        max_length=500, help_text="Enter more description about your address"
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 # Product
 class Category(models.Model):
     slug = models.SlugField(unique=True)
@@ -126,6 +137,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
 
 
 class OrderItem(models.Model):
