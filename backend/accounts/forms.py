@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User
+from .models import Address, User
 
 
 class UserEditForm(forms.ModelForm):
@@ -34,3 +34,9 @@ class UserRegisterForm(forms.ModelForm):
             raise forms.ValidationError("password and confirm_password does not match")
 
         return cleaned_data
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude = ["user"]

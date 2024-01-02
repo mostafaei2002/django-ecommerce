@@ -5,13 +5,13 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 
-from .forms import UserEditForm, UserRegisterForm
-from .models import User
+from .forms import AddressForm, UserEditForm, UserRegisterForm
+from .models import Address, User
 
 # Create your views here.
 
 
-def handle_carts(request, user):
+def merge_carts(request, user):
     # There are 3 scenarios
     # Old Cart && no new cart
     # Old cart && new cart
@@ -64,7 +64,13 @@ class UserProfileView(LoginRequiredMixin, View):
             }
         )
 
-        return render(request, "accounts/user_profile.html", {"form": user_form})
+        address_list = request.user.addresses.all()
+
+        return render(
+            request,
+            "accounts/user_profile.html",
+            {"form": user_form, "address_list": address_list},
+        )
 
     def post(self, request):
         user_form = UserEditForm(request.POST)
@@ -100,7 +106,7 @@ class UserRegisterView(View):
 
             # Login registered user & handle cart logic
             user = authenticate(request, username=username, password=password)
-            handle_carts(request, user)
+            merge_carts(request, user)
             if user is not None:
                 login(request, user)
                 return redirect(reverse("profile"))
@@ -122,7 +128,7 @@ class UserLoginView(View):
 
         user = authenticate(request, username=username, password=password)
 
-        handle_carts(request, user)
+        merge_carts(request, user)
 
         if user is not None:
             login(request, user)
@@ -138,8 +144,25 @@ class UserLoginView(View):
 
 
 class AddAddressView(View):
-    pass
+    def get(self, request):
+        address_form = AddressForm()
+        return render(request, "accounts/add_address.html", {"form": address_form})
+
+    def post(self, request):
+        address_form = AddressForm(request.POST)
+
+        if address_form.is_valid():
+            new_address = address_form.save(commit=False)
+            new_address.user = request.user
+            new_address.save()
+            return redirect(reverse("profile"))
+
+        return render(request, "accounts/add_address.html", {"form": address_form})
 
 
 class DeleteAddressView(View):
+    pass
+
+
+class EditAddressView(View):
     pass

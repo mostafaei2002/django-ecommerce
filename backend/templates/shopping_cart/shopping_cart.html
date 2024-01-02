@@ -24,7 +24,7 @@
                             <h5 class="mb-0">{{item.product.title}}</h5>
                             <form action="{% url "delete-from-cart" item.id %}" method="post">
                                 {% csrf_token %}
-                                <button class="btn-close text-danger"></button>
+                                <button class="btn-close"></button>
                             </form>
                         </div>
                         <div class="hstack align-items-center justify-content-between mt-3">

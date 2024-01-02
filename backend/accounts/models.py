@@ -32,4 +32,4 @@ class Address(models.Model):
         max_length=500, help_text="Enter more description about your address"
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
