@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from core.models import Product
 from django.shortcuts import redirect, render
 from django.views import View
