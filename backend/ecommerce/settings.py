@@ -34,7 +34,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "shop",
+    "core",
+    "accounts",
+    "shopping_cart",
+    "order",
     "crispy_forms",
     "crispy_bootstrap5",
     "django.contrib.admin",
@@ -64,7 +67,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "shop.context_processor.cart_context",
+                "shopping_cart.context_processor.cart_context",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -142,7 +145,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 # Extend Base User Model
-AUTH_USER_MODEL = "shop.User"
+AUTH_USER_MODEL = "accounts.User"
 
 # Cripsy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
