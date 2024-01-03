@@ -1,3 +1,37 @@
 {% extends "base/base.html" %}
 
 {% block title %}Order {{order.id}}{% endblock %}
+
+{% block body %}
+<main class="pt-7 pb-6">
+    <div class="container" style="min-height: 70vh;">
+            <h2>
+                Ordered {{order.items.count}}
+                {% if order.items.count == 1 %}item{% else %}items{% endif %}
+                 on {{order.created_at}}
+            </h2>
+            
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <ul class="list-group">
+                        {% for item in order.items.all %}
+                            <li class="list-group-item">
+                               <div class="hstack justify-content-between">
+                                <div class="d-flex mb-3 align-items-center">
+                                    <input type="number" value="{{item.quantity}}" class="form-control me-2" style="width:50px;" disabled >
+                                    <h4 class="mb-0">{{item.product.title|title}}</h4>
+                                </div>
+                                <span class="fs-5">Total: {{item.quantity}} x {{item.product.price}} = {{item.price}}</span>
+                               </div> 
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-flex justify-content-between mt-5">
+                        <a class="btn btn-outline-dark" href="{% url "submit-order" order.id %}">Submit Order</a>
+                        <span class="fs-3">Total: ${{ order.calculate_total }}</span>
+                    </div>
+                </div>
+            </div>
+    </div>
+</main>
+{% endblock %}
