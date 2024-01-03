@@ -5,14 +5,14 @@
 {% block body %}
 <main class="pt-7 pb-6">
     <div class="container" style="min-height: 70vh;">
-            <h2>
-                Ordered {{order.items.count}}
-                {% if order.items.count == 1 %}item{% else %}items{% endif %}
-                 on {{order.created_at}}
-            </h2>
             
             <div class="row">
                 <div class="col-md-10 offset-md-1">
+                    <h2>
+                        Ordered {{order.items.count}}
+                        {% if order.items.count == 1 %}item{% else %}items{% endif %}
+                         on {{order.created_at}}
+                    </h2>
                     <ul class="list-group">
                         {% for item in order.items.all %}
                             <li class="list-group-item">
@@ -26,12 +26,38 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <div class="d-flex justify-content-between mt-5">
-                        <a class="btn btn-outline-dark" href="{% url "submit-order" order.id %}">Submit Order</a>
-                        <span class="fs-3">Total: ${{ order.calculate_total }}</span>
-                    </div>
+
+                    <h2 class="mt-5">Choose Address:</h2>
+                    <form action="{% url "submit-order" order.id %}" >
+                        {% csrf_token %}
+                        <ul class="list-group">
+                            {% for address in address_list %}
+                                <li class="list-group-item">
+                                    <label class="w-100 form-check-label" for="address_{{address.id}}">
+                                        <div class="hstack justify-content-between">
+                                            <div class="form-check">
+                                                {{address.province}}-{{address.city}}-{{address.address}}
+                                                <input id="address_{{address.id}}" name="address_id" type="radio" value={{address.id}} 
+                                                class="form-check-input" {% if forloop.first %}checked{% endif %}>
+                                            </div>
+                                            <div>{{address.postal_code}}</div>
+                                        </div>
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="d-flex justify-content-between mt-5">
+                            <button class="btn btn-outline-dark">Submit Order</button>
+                            <span class="fs-3">Total: ${{ order.calculate_total }}</span>
+                        </div>
+                    </form>
+                    
+                    
+
                 </div>
             </div>
+            
     </div>
 </main>
 {% endblock %}

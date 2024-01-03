@@ -39,8 +39,13 @@ class OrderDetailView(View):
     # Otherwise get an address from the user
     def get(self, request, id):
         order_obj = Order.objects.get(pk=id)
+        address_list = request.user.addresses.all()
 
-        return render(request, "order/order_detail.html", {"order": order_obj})
+        return render(
+            request,
+            "order/order_detail.html",
+            {"order": order_obj, "address_list": address_list},
+        )
 
 
 class SubmitOrderView(View):
