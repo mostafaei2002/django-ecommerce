@@ -40,12 +40,16 @@
                                 <div>{{address.province}}-{{address.city}}-{{address.address}}</div>
                                 <div class="d-flex gap-3">
                                     <span>{{address.postal_code}}</span>
-                                    <form action="{% url "delete-address" address.id %}" method="post">
+                                    <form action="{% url "delete-address" %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="address_id" value="{{address.id}}">
                                         <button class="btn-close"></button>
                                     </form>
                                 </div>
                             </div>
                         </li>
+                        {% empty %}
+                        <p>You haven't added any addresses yet. Click below to add an address.</p>
                         {% endfor %}
                       </ul>
 

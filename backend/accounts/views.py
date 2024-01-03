@@ -161,7 +161,12 @@ class AddAddressView(View):
 
 
 class DeleteAddressView(View):
-    pass
+    def post(self, request):
+        print(request.POST)
+        address_id = request.POST["address_id"]
+        address = Address.objects.get(pk=address_id)
+        address.delete()
+        return redirect("profile")
 
 
 class EditAddressView(View):
