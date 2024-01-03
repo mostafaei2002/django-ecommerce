@@ -44,7 +44,7 @@
                     </span>
                 </div>
                 <div>
-                    <form action="{% url "submit-order" %}" method="post" class="d-grid">
+                    <form action="{% url "add-order" %}" method="post" class="d-grid">
                         {% csrf_token %}
                         <button class="btn btn-outline-dark btn-lg">Submit Order</button>
                     </form>

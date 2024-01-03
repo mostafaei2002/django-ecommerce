@@ -65,11 +65,16 @@ class UserProfileView(LoginRequiredMixin, View):
         )
 
         address_list = request.user.addresses.all()
+        orders = request.user.orders.all()
 
         return render(
             request,
             "accounts/user_profile.html",
-            {"form": user_form, "address_list": address_list},
+            {
+                "form": user_form,
+                "address_list": address_list,
+                "orders": orders,
+            },
         )
 
     def post(self, request):
