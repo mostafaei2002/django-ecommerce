@@ -49,4 +49,7 @@ class OrderDetailView(View):
 
 
 class SubmitOrderView(View):
-    pass
+    def post(self, request, id):
+        # address_id = request.post["address_id"]
+
+        return render(request, "order/payment_placeholder.html")

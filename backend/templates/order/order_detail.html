@@ -28,7 +28,7 @@
                     </ul>
 
                     <h2 class="mt-5">Choose Address:</h2>
-                    <form action="{% url "submit-order" order.id %}" >
+                    <form action="{% url "submit-order" order.id %}" method="post">
                         {% csrf_token %}
                         <ul class="list-group">
                             {% for address in address_list %}
