@@ -12,8 +12,9 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: "18"
-            - name: install-liara-cli
-              run: npm i -g @liara/cli@5
-
-            - name: deploy-liara
-              run: liara deploy --api-token="secrets.LIARA_API_TOKEN"
+            - name: update-liara
+              env:
+                  LIARA_TOKEN: ${{ secrets.LIARA_API_TOKEN }}
+              run: |
+                  npm i -g @liara/cli@5
+                  liara deploy --app="docker-mcommerce" --api-token="$LIARA_TOKEN"
