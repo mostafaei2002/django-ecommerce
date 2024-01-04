@@ -9,6 +9,7 @@
     "author": "mostafaei2002",
     "license": "ISC",
     "devDependencies": {
+        "@liara/cli": "^5.6.0",
         "@popperjs/core": "^2.11.8",
         "autoprefixer": "^10.4.16",
         "bootstrap": "^5.3.2",

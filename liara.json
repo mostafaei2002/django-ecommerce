@@ -1,6 +1,5 @@
 {
     "platform": "docker",
-    "image": "python:3.12.1-alpine3.18",
     "app": "docker-mcommerce",
     "port": 8000
 }
