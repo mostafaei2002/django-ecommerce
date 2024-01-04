@@ -154,3 +154,5 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Authentication
 LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+CSRF_TRUSTED_ORIGINS = [os.environ.get("ALLOWED_HOST")]
