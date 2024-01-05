@@ -1,21 +1,21 @@
 {% load static %}
 <div class="dropdown">
     <a
-        class="dropdown-toggle"
-        type="button"
-        id="triggerId"
+        class="dropdown-toggle d-flex align-items-center gap-1"
+        id="profile-modal"
         data-bs-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
+        href="#"
     >
-    {{user.avatar}}
+    {% if user.avatar %}
+    <img src="user.avatar.url" alt="avatar" stlye="width: 36px; height:36px;" class="rouded-circle">
+    {% else %}
+    <div class="bg-dark rounded-circle" style="width:36px; height:36px;"></div>
+    {% endif %}
     </a>
-    <div class="dropdown-menu" aria-labelledby="triggerId">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item disabled" href="#">Disabled action</a>
-        <h6 class="dropdown-header">Section header</h6>
-        <a class="dropdown-item" href="#">Action</a>
+    <div class="dropdown-menu" aria-labelledby="profile-modal">
+        <a class="dropdown-item" href="{% url "profile" %}">Profile</a>
+        <a class="dropdown-item" href="{% url "profile" %}">Orders</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">After divider action</a>
+        <a class="dropdown-item" href="{% url "logout" %}">Logout</a>
     </div>
 </div>

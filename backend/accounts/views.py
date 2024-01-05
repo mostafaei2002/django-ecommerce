@@ -74,7 +74,6 @@ class UserProfileView(LoginRequiredMixin, View):
                 "form": user_form,
                 "address_list": address_list,
                 "orders": orders,
-                "msg": "sucess",
             },
         )
 
@@ -92,7 +91,7 @@ class UserProfileView(LoginRequiredMixin, View):
         return render(
             request,
             "accounts/user_profile.html",
-            {"form": user_form, "msg": "success"},
+            {"form": user_form, "error": "Invalid form."},
         )
 
 

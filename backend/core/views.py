@@ -22,7 +22,10 @@ class IndexView(View):
         return render(
             request,
             "core/front_page.html",
-            {"latest_products": latest_products, "categories": top_level_categories},
+            {
+                "latest_products": latest_products,
+                "categories": top_level_categories,
+            },
         )
 
     def post(self, request):
