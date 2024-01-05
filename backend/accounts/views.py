@@ -74,6 +74,7 @@ class UserProfileView(LoginRequiredMixin, View):
                 "form": user_form,
                 "address_list": address_list,
                 "orders": orders,
+                "msg": "sucess",
             },
         )
 
@@ -82,8 +83,17 @@ class UserProfileView(LoginRequiredMixin, View):
 
         if user_form.is_valid():
             user_form.save()
+            return render(
+                request,
+                "accounts/user_profile.html",
+                {"form": user_form, "msg": "Profile edited successfully!"},
+            )
 
-        return render(request, "accounts/user_profile.html", {"form": user_form})
+        return render(
+            request,
+            "accounts/user_profile.html",
+            {"form": user_form, "msg": "success"},
+        )
 
 
 class UserRegisterView(View):

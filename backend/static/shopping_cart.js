@@ -9,13 +9,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./frontend/js/main.js":
-/*!*****************************!*\
-  !*** ./frontend/js/main.js ***!
-  \*****************************/
+/***/ "./frontend/js/shopping_cart.js":
+/*!**************************************!*\
+  !*** ./frontend/js/shopping_cart.js ***!
+  \**************************************/
 /***/ (() => {
 
-eval("const hideList = document.querySelectorAll(\".hide-after-5\");\n\nhideList.forEach((el) => {\n    setTimeout(() => {\n        el.classList.remove(\"show\");\n    }, 5000);\n});\n\n\n//# sourceURL=webpack://django-ecommerce/./frontend/js/main.js?");
+eval("\n\n//# sourceURL=webpack://django-ecommerce/./frontend/js/shopping_cart.js?");
 
 /***/ })
 
@@ -26,7 +26,7 @@ eval("const hideList = document.querySelectorAll(\".hide-after-5\");\n\nhideList
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./frontend/js/main.js"]();
+/******/ 	__webpack_modules__["./frontend/js/shopping_cart.js"]();
 /******/ 	
 /******/ })()
 ;

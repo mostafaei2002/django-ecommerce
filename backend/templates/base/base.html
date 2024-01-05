@@ -7,12 +7,19 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static "bootstrap.css" %}">
     <script defer src="{% static "bootstrap.js" %}"></script>
+    <script defer src="{% static "main.js" %}"></script>
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="position-relative">
     {% include "base/includes/navbar.html" %}
     {% include "shopping_cart/shopping_cart.html" %}
     {% block body %}{% endblock %}
     {% include "base/includes/footer.html" %}
+    {% if msg %}
+        <div class="alert alert-success position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{msg}}</div>
+    {% endif %}
+    {% if error %}
+        <div class="alert alert-danger position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{msg}}</div>
+    {% endif %}
 </body>
 </html>
