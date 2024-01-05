@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("IS_DEVELOPMENT")
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST")]
+ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST"), "localhost"]
 
 
 # Application definition
@@ -155,4 +155,5 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Authentication
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 
-CSRF_TRUSTED_ORIGINS = [os.environ.get("ALLOWED_HOST")]
+if DEBUG == False:
+    CSRF_TRUSTED_ORIGINS = ["https://" + os.environ.get("ALLOWED_HOST")]
