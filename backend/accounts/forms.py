@@ -6,7 +6,7 @@ from .models import Address, User
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["avatar", "first_name", "last_name", "phone", "bio"]
+        fields = ["first_name", "last_name", "phone", "bio"]
 
 
 class UserRegisterForm(forms.ModelForm):
