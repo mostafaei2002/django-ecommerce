@@ -52,7 +52,7 @@ def merge_carts(request, user):
         old_cart.delete()
 
 
-class UserProfileView(LoginRequiredMixin, View):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user_form = UserEditForm(
             initial={
@@ -77,11 +77,20 @@ class UserProfileView(LoginRequiredMixin, View):
             },
         )
 
+
+class ProfileEditView(View):
     def post(self, request):
-        user_form = UserEditForm(request.POST)
+        user_form = UserEditForm(request.POST, request=request)
 
         if user_form.is_valid():
-            user_form.save()
+            user = request.user
+            cleaned_data = user_form.cleaned_data
+            user.first_name = cleaned_data["first_name"]
+            user.last_name = cleaned_data["last_name"]
+            user.phone = cleaned_data["phone"]
+            user.bio = cleaned_data["bio"]
+            user.save()
+
             return render(
                 request,
                 "accounts/user_profile.html",
@@ -91,7 +100,7 @@ class UserProfileView(LoginRequiredMixin, View):
         return render(
             request,
             "accounts/user_profile.html",
-            {"form": user_form, "error": "Invalid form."},
+            {"form": user_form, "error": "Please check your inputs."},
         )
 
 
