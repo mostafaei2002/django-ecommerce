@@ -55,15 +55,7 @@ def merge_carts(request, user):
 
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        user_form = UserEditForm(
-            initial={
-                "first_name": request.user.first_name,
-                "last_name": request.user.last_name,
-                "phone": request.user.phone,
-                "bio": request.user.bio,
-            }
-        )
-        avatar_form = UserAvatarForm()
+        user_form = UserEditForm(instance=request.user)
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
@@ -73,7 +65,6 @@ class ProfileView(LoginRequiredMixin, View):
             "accounts/user_profile.html",
             {
                 "form": user_form,
-                "avatar_form": avatar_form,
                 "address_list": address_list,
                 "orders": orders,
             },
@@ -82,34 +73,23 @@ class ProfileView(LoginRequiredMixin, View):
 
 class ProfileEditView(LoginRequiredMixin, View):
     def post(self, request):
-        user_form = UserEditForm(request.POST, request=request)
-        avatar_form = UserAvatarForm(request.POST, request.FILES)
+        user_form = UserEditForm(request.POST, request.FILES, instance=request.user)
 
-        if user_form.is_valid() and avatar_form.is_valid():
-            avatar_form.save()
+        if user_form.is_valid():
+            user_form.save()
 
-            user = request.user
-            cleaned_data = user_form.cleaned_data
-            user.first_name = cleaned_data["first_name"]
-            user.last_name = cleaned_data["last_name"]
-            user.phone = cleaned_data["phone"]
-            user.bio = cleaned_data["bio"]
-            user.save()
-
-            messages.success(request, "Your profile was updaterd successfully.")
+            messages.success(request, "Your profile was updated successfully.")
             return redirect(reverse("profile"))
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
 
-        messages.error(request, "Please check your inputs.")
-
+        messages.error(request, "Invalid inputs.")
         return render(
             request,
             "accounts/user_profile.html",
             {
                 "form": user_form,
-                "avatar_form": avatar_form,
                 "address_list": address_list,
                 "orders": orders,
             },

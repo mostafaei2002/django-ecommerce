@@ -18,9 +18,8 @@
                 {% comment %} Profile Tab {% endcomment %}
               <div class="tab-pane fade show active mx-auto" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
                     <div class="col-md-6 offset-md-3">
-                        <form action="{% url "edit-profile" %}" method="post">
+                        <form action="{% url "edit-profile" %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            {{avatar_form|crispy}}
                             {{form|crispy}}
                             <div class="d-grid"><button class="btn btn-outline-dark">Submit</button></div>
                         </form>
