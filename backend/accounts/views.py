@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -78,7 +79,7 @@ class ProfileView(LoginRequiredMixin, View):
         )
 
 
-class ProfileEditView(View):
+class ProfileEditView(LoginRequiredMixin, View):
     def post(self, request):
         user_form = UserEditForm(request.POST, request=request)
 
@@ -91,11 +92,8 @@ class ProfileEditView(View):
             user.bio = cleaned_data["bio"]
             user.save()
 
-            return render(
-                request,
-                "accounts/user_profile.html",
-                {"form": user_form, "msg": "Profile edited successfully!"},
-            )
+            messages.success(request, "hello")
+            return redirect(reverse("profile"))
 
         return render(
             request,

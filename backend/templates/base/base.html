@@ -15,11 +15,13 @@
     {% include "shopping_cart/shopping_cart.html" %}
     {% block body %}{% endblock %}
     {% include "base/includes/footer.html" %}
-    {% if msg %}
-        <div class="alert alert-success position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{msg}}</div>
-    {% endif %}
-    {% if error %}
-        <div class="alert alert-danger position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{error}}</div>
-    {% endif %}
+    {% for message in messages %}
+        <div class="alert
+        {% if message.tags %}
+        alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}
+        {% endif %}
+        position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{message}}</div>
+    {% endfor %}
 </body>
 </html>
+
