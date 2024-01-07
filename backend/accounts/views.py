@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 
-from .forms import AddressForm, UserEditForm, UserRegisterForm
+from .forms import AddressForm, UserAvatarForm, UserEditForm, UserRegisterForm
 from .models import Address, User
 
 # Create your views here.
@@ -52,17 +53,9 @@ def merge_carts(request, user):
         old_cart.delete()
 
 
-class UserProfileView(LoginRequiredMixin, View):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        user_form = UserEditForm(
-            initial={
-                "avatar": request.user.avatar,
-                "first_name": request.user.first_name,
-                "last_name": request.user.last_name,
-                "phone": request.user.phone,
-                "bio": request.user.bio,
-            }
-        )
+        user_form = UserEditForm(instance=request.user)
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
@@ -77,21 +70,29 @@ class UserProfileView(LoginRequiredMixin, View):
             },
         )
 
+
+class ProfileEditView(LoginRequiredMixin, View):
     def post(self, request):
-        user_form = UserEditForm(request.POST)
+        user_form = UserEditForm(request.POST, request.FILES, instance=request.user)
 
         if user_form.is_valid():
             user_form.save()
-            return render(
-                request,
-                "accounts/user_profile.html",
-                {"form": user_form, "msg": "Profile edited successfully!"},
-            )
 
+            messages.success(request, "Your profile was updated successfully.")
+            return redirect(reverse("profile"))
+
+        address_list = request.user.addresses.all()
+        orders = request.user.orders.all()
+
+        messages.error(request, "Invalid inputs.")
         return render(
             request,
             "accounts/user_profile.html",
-            {"form": user_form, "error": "Invalid form."},
+            {
+                "form": user_form,
+                "address_list": address_list,
+                "orders": orders,
+            },
         )
 
 
@@ -131,15 +132,14 @@ class UserRegisterView(View):
 class UserLoginView(View):
     def get(self, request):
         login_form = AuthenticationForm()
-        # breakpoint()
         return render(request, "accounts/login.html", {"form": login_form})
 
     def post(self, request):
         # Login & Merge old cart with new Cart
         login_form = AuthenticationForm()
         username = request.POST.get("username")
-        password = request.POST.get("password")
 
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
 
         merge_carts(request, user)
@@ -169,6 +169,8 @@ class AddAddressView(View):
             new_address = address_form.save(commit=False)
             new_address.user = request.user
             new_address.save()
+
+            messages.success(request, "Address added successfully.")
             return redirect(reverse("profile"))
 
         return render(request, "accounts/add_address.html", {"form": address_form})
@@ -180,6 +182,8 @@ class DeleteAddressView(View):
         address_id = request.POST["address_id"]
         address = Address.objects.get(pk=address_id)
         address.delete()
+
+        messages.success(request, "Address deleted successfully.")
         return redirect("profile")
 
 

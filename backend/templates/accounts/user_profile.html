@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
 {% load crispy_forms_tags %}
-{% block title %}Welcome {{user.first_name}}{% endblock %}
+{% block title %}Welcome {{user.first_name|title}}{% endblock %}
 
 {% block body %}
 <section class="py-7" style="min-height: 85vh;">
@@ -10,7 +10,6 @@
               <button class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</button>
               <button class="nav-link" id="v-pills-order-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">Orders</button>
               <button class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address" aria-selected="false">Address</button>
-              <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
             </div>
 
             {% comment %} Tab Content {% endcomment %}
@@ -19,7 +18,7 @@
                 {% comment %} Profile Tab {% endcomment %}
               <div class="tab-pane fade show active mx-auto" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
                     <div class="col-md-6 offset-md-3">
-                        <form action="">
+                        <form action="{% url "edit-profile" %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {{form|crispy}}
                             <div class="d-grid"><button class="btn btn-outline-dark">Submit</button></div>
@@ -76,8 +75,6 @@
                   </div>
               </div>
 
-              {% comment %} Settings Tab {% endcomment %}
-              <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
             </div>
         </div>
     </div>

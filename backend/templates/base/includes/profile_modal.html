@@ -7,7 +7,9 @@
         href="#"
     >
     {% if user.avatar %}
-    <img src="user.avatar.url" alt="avatar" stlye="width: 36px; height:36px;" class="rouded-circle">
+    <div style="width: 36px">
+        <img src="{{user.avatar.url}}" alt="avatar" class="img-fluid rounded-circle">
+    </div>
     {% else %}
     <div class="bg-dark rounded-circle" style="width:36px; height:36px;"></div>
     {% endif %}
@@ -16,6 +18,9 @@
         <a class="dropdown-item" href="{% url "profile" %}">Profile</a>
         <a class="dropdown-item" href="{% url "profile" %}">Orders</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url "logout" %}">Logout</a>
+        <form action="{% url "logout" %}" method="post">
+            {% csrf_token %}
+            <button class="dropdown-item">Logout</button>
+        </form>
     </div>
 </div>

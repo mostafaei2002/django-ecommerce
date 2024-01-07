@@ -13,7 +13,7 @@ class User(AbstractUser):
         ],
         unique=True,
     )
-    avatar = models.ImageField(upload_to="avatars")
+    avatar = models.ImageField(upload_to="avatars", blank=True)
 
     email_validated = models.BooleanField(default=False)
     phone_validated = models.BooleanField(default=False)
