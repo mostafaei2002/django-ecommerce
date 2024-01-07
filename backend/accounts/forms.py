@@ -5,7 +5,6 @@ from .models import Address, User
 
 
 class UserEditForm(forms.Form):
-    avatar = forms.ImageField(required=False)
     first_name = forms.CharField(max_length=255)
     last_name = forms.CharField(max_length=255)
     phone = forms.CharField(validators=[RegexValidator("[0-9]+")])
@@ -24,6 +23,12 @@ class UserEditForm(forms.Form):
         ):
             raise forms.ValidationError("Phone number already exists.")
         return cleaned_data
+
+
+class UserAvatarForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["avatar"]
 
 
 class UserRegisterForm(forms.ModelForm):

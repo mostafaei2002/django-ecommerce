@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 
-from .forms import AddressForm, UserEditForm, UserRegisterForm
+from .forms import AddressForm, UserAvatarForm, UserEditForm, UserRegisterForm
 from .models import Address, User
 
 # Create your views here.
@@ -57,13 +57,13 @@ class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user_form = UserEditForm(
             initial={
-                "avatar": request.user.avatar,
                 "first_name": request.user.first_name,
                 "last_name": request.user.last_name,
                 "phone": request.user.phone,
                 "bio": request.user.bio,
             }
         )
+        avatar_form = UserAvatarForm()
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
@@ -73,6 +73,7 @@ class ProfileView(LoginRequiredMixin, View):
             "accounts/user_profile.html",
             {
                 "form": user_form,
+                "avatar_form": avatar_form,
                 "address_list": address_list,
                 "orders": orders,
             },
@@ -82,8 +83,11 @@ class ProfileView(LoginRequiredMixin, View):
 class ProfileEditView(LoginRequiredMixin, View):
     def post(self, request):
         user_form = UserEditForm(request.POST, request=request)
+        avatar_form = UserAvatarForm(request.POST, request.FILES)
 
-        if user_form.is_valid():
+        if user_form.is_valid() and avatar_form.is_valid():
+            avatar_form.save()
+
             user = request.user
             cleaned_data = user_form.cleaned_data
             user.first_name = cleaned_data["first_name"]
@@ -92,13 +96,23 @@ class ProfileEditView(LoginRequiredMixin, View):
             user.bio = cleaned_data["bio"]
             user.save()
 
-            messages.success(request, "hello")
+            messages.success(request, "Your profile was updaterd successfully.")
             return redirect(reverse("profile"))
+
+        address_list = request.user.addresses.all()
+        orders = request.user.orders.all()
+
+        messages.error(request, "Please check your inputs.")
 
         return render(
             request,
             "accounts/user_profile.html",
-            {"form": user_form, "error": "Please check your inputs."},
+            {
+                "form": user_form,
+                "avatar_form": avatar_form,
+                "address_list": address_list,
+                "orders": orders,
+            },
         )
 
 
@@ -138,15 +152,14 @@ class UserRegisterView(View):
 class UserLoginView(View):
     def get(self, request):
         login_form = AuthenticationForm()
-        # breakpoint()
         return render(request, "accounts/login.html", {"form": login_form})
 
     def post(self, request):
         # Login & Merge old cart with new Cart
         login_form = AuthenticationForm()
         username = request.POST.get("username")
-        password = request.POST.get("password")
 
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
 
         merge_carts(request, user)
@@ -176,6 +189,8 @@ class AddAddressView(View):
             new_address = address_form.save(commit=False)
             new_address.user = request.user
             new_address.save()
+
+            messages.success(request, "Address added successfully.")
             return redirect(reverse("profile"))
 
         return render(request, "accounts/add_address.html", {"form": address_form})
@@ -187,6 +202,8 @@ class DeleteAddressView(View):
         address_id = request.POST["address_id"]
         address = Address.objects.get(pk=address_id)
         address.delete()
+
+        messages.success(request, "Address deleted successfully.")
         return redirect("profile")
 
 
