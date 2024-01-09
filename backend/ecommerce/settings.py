@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "order",
     "crispy_forms",
     "crispy_bootstrap5",
+    "jet.dashboard",
+    "jet",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
