@@ -22,6 +22,8 @@ from django.urls import include, path
 urlpatterns = (
     [
         path("", include("core.urls")),
+        path("jet/", include("jet.urls", "jet")),
+        path("jet/dashboard/", include("jet.dashboard.urls", "jet-dashboard")),
         path("admin/", admin.site.urls),
         path("cart/", include("shopping_cart.urls")),
         path("orders/", include("order.urls")),
