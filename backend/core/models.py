@@ -1,4 +1,5 @@
 from accounts.models import User
+from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -35,7 +36,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     image = models.ImageField(upload_to="products")
     summary = models.TextField(max_length=500, blank=True, null=True)
-    description = models.TextField(max_length=20000, blank=True, null=True)
+    description = RichTextField(max_length=20000, blank=True, null=True)
     price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

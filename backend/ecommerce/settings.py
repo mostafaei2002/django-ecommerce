@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import mimetypes
 import os
 from pathlib import Path
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     "accounts",
     "shopping_cart",
     "order",
+    "ckeditor",
+    "ckeditor_uploader",
     "crispy_forms",
     "crispy_bootstrap5",
     "jet.dashboard",
@@ -159,3 +162,7 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 if DEBUG == False:
     CSRF_TRUSTED_ORIGINS = ["https://" + os.environ.get("ALLOWED_HOST")]
+
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "media/"
