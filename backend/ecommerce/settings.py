@@ -164,5 +164,17 @@ if DEBUG == False:
     CSRF_TRUSTED_ORIGINS = ["https://" + os.environ.get("ALLOWED_HOST")]
 
 
+# CKEditor Settings
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "media/"
+
+# Django Jet Settings
+JET_THEMES = [
+    {
+        "theme": "default",  # theme folder name
+        "color": "#47bac1",  # color of the theme's button in user menu
+        "title": "Default",  # theme title
+    },
+    {"theme": "green", "color": "#44b78b", "title": "Green"},
+    {"theme": "light-green", "color": "#2faa60", "title": "Light Green"},
+]
