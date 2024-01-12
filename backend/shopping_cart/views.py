@@ -52,7 +52,7 @@ class CartDeleteView(View):
     # TODO add in user authentication
     def post(self, request, id):
         cart_item = CartItem.objects.get(pk=id)
-        if request.user == cart_item.cart.user:
+        if request.user == cart_item.cart.created_by:
             cart_item.delete()
         else:
             return redirect(reverse("home"))
