@@ -170,6 +170,7 @@ CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "media/"
 
 # Django Jet Settings
+X_FRAME_OPTIONS = "ALLOWALL"
 JET_THEMES = [
     {
         "theme": "default",  # theme folder name

@@ -18,13 +18,25 @@ class Category(models.Model):
     parent_category = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
-        related_name="sub_categories",
+        related_name="children",
         null=True,
         blank=True,
     )
 
     def __str__(self):
         return self.name
+
+    def get_all_products(self):
+        products = []
+        categories = [self]
+
+        while categories:
+            current = categories.pop()
+
+            categories.extend(list(current.children.all()))
+            products.extend(list(current.products.all()))
+
+        return products
 
     class Meta:
         verbose_name = "category"

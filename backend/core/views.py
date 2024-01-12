@@ -79,10 +79,13 @@ class ProductCategoryListView(ListView):
 
     def get_queryset(self):
         self.slug = self.kwargs["slug"]
-        return Product.objects.filter(
-            Q(categories__slug=self.slug)
-            | Q(categories__parent_category__slug=self.slug)
-        )
+
+        target_category = Category.objects.get(slug=self.slug)
+        return target_category.get_all_products()
+        # return Product.objects.filter(
+        #     Q(categories__slug=self.slug)
+        #     | Q(categories__parent_category__slug=self.slug)
+        # )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
