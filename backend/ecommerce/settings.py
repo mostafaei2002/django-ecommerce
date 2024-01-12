@@ -72,7 +72,8 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "shopping_cart.context_processor.cart_context",
+                "core.context_processors.category_context",
+                "shopping_cart.context_processors.cart_context",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",

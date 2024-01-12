@@ -16,7 +16,7 @@
                         <a href="{% url "category" category.slug %}" class="text-decoration-none">
                             <div class="d-flex flex-column justify-content-center align-items-center">
                                 <img class="img-fluid rounded-circle" src="{{category.image.url}}" alt="{{category.name}}" style="height: 8rem;">
-                                <h4 class="text-dark">{{category.name|title}}</h4>
+                                <h4 class="text-dark mt-2">{{category.name|title}}</h4>
                             </div>
                         </a>
                     </div>
@@ -33,7 +33,7 @@
             </div>
             
             {% comment %} TODO Latest products go here {% endcomment %}
-            <div class="row g-5">
+            <div class="row g-2">
                 {% for product in latest_products %}
                     <div class="col-md-3">
                         <a href="{% url "single_product" product.slug %}" class="text-decoration-none">

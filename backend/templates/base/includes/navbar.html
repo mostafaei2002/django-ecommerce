@@ -24,9 +24,11 @@
                 aria-labelledby="dropdownId"
             >
             {% comment %} TODO Top Level Category Items Go Here {% endcomment %}
-                <a class="dropdown-item" href="#"
-                    >Action 1</a
+            {% for category in global_categories %}
+                <a class="dropdown-item" href="{% url "category" category.slug %}"
+                    >{{ category.name }}</a
                 >
+            {% endfor %}
             </div>
         </div>
 
