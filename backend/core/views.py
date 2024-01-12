@@ -28,9 +28,6 @@ class IndexView(View):
             },
         )
 
-    def post(self, request):
-        pass
-
 
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
@@ -74,6 +71,7 @@ class ProductDetailView(View):
 
 
 class ProductCategoryListView(ListView):
+    # TODO Create Algorithm to get products
     template_name = "core/product_list.html"
     paginate_by = 10
     context_object_name = "product_list"
