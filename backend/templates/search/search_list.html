@@ -6,10 +6,15 @@
 {% block body %}
 <main>
     <section class="pt-7 pb-4">
-        <div class="container">
+        <div class="container" style="min-height: 80vh;">
             <div class="row g-2">
                 <h1 class="fw-bold mb-1">Results found for {{query}}</h1>
-                <p class="text-muted mb-5">{{page_obj.paginator.num_pages}} pages found.</p>
+                {% if product_list %}
+                    <p class="text-muted mb-5">{{product_list.count}} results found.</p>
+                {% else %}
+                
+                    <p class="text-muted mb-5">0 pages found.</p>
+                {% endif %}
 
                 {% for product in product_list %}
                     <div class="col-md-3">
@@ -24,7 +29,7 @@
                         </a>
                     </div>
                 {% empty %}
-                    <p>There are no Products available</p>
+                    <p>No products found for this query ... Please try searching for another term</p>
                 {% endfor %}
 
             </div>
