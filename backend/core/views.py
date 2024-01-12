@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -86,4 +87,21 @@ class ProductCategoryListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["category"] = self.slug
+        return context
+
+
+class SearchViewList(ListView):
+    template_name = "search/search_list.html"
+    paginate_by = 10
+    context_object_name = "product_list"
+
+    def get_queryset(self):
+        query = self.request.GET["query"]
+        return Product.objects.all().filter(
+            Q(title__contains=query) | Q(description__contains=query)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET["query"]
         return context
