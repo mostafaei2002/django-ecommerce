@@ -25,4 +25,6 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="order_item"
+    )

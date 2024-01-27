@@ -37,6 +37,7 @@
                 {% endfor %}
             </ul>
             
+            {% if cart.items.count > 0 %}
             <div>
                 <div class="mb-4 fs-4">
                     <span>
@@ -50,6 +51,7 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

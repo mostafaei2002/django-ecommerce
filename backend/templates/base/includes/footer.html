@@ -9,10 +9,16 @@
                     class="nav align-items-left vstack"
                 >
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="#">Home</a>
+                        <a class="nav-link link-light" href="{% url "home" %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-light" href="#">Link</a>
+                        <a class="nav-link link-light" href="{% url "product_list" %}">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-light" href="{% url "login" %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-light" href="{% url "register" %}">Signup</a>
                     </li>
                 </ul>
                 

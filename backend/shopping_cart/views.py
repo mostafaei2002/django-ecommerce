@@ -1,5 +1,5 @@
 from core.models import Product
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
 from django.views import View
 
 from .models import Cart, CartItem
@@ -52,7 +52,10 @@ class CartDeleteView(View):
     # TODO add in user authentication
     def post(self, request, id):
         cart_item = CartItem.objects.get(pk=id)
-        cart_item.delete()
+        if request.user == cart_item.cart.created_by:
+            cart_item.delete()
+        else:
+            return redirect(reverse("home"))
 
         return redirect(request.META["HTTP_REFERER"])
 

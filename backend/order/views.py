@@ -41,6 +41,11 @@ class OrderDetailView(View):
         order_obj = Order.objects.get(pk=id)
         address_list = request.user.addresses.all()
 
+        print("Hello world")
+        print(order_obj.user, request.user)
+        if order_obj.user != request.user:
+            return redirect(reverse("profile"))
+
         return render(
             request,
             "order/order_detail.html",
