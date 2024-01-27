@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
+from shopping_cart.models import Cart
 
 from .forms import AddressForm, UserAvatarForm, UserEditForm, UserRegisterForm
 from .models import Address, User

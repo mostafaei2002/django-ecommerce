@@ -2,8 +2,7 @@ from accounts.models import User
 from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
-# TODO add helper functions to models
+from django.db.models import Q, Sum
 
 
 # Product
@@ -59,6 +58,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_top_selling():
+        top_selling = Product.objects.annotate(
+            qty=Sum("order_item__quantity")
+        ).order_by("-qty")
+        return top_selling
 
 
 class Review(models.Model):

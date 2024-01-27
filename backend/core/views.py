@@ -16,15 +16,14 @@ class IndexView(View):
     def get(self, request):
         top_level_categories = Category.objects.filter(parent_category=None)
         latest_products = Product.objects.all().order_by("-updated_at")[:8]
-
-        # TODO Pass in Top Selling products
-        # TODO Pass in some recommended products for logged in users
+        top_selling = Product.get_top_selling()
 
         return render(
             request,
             "core/front_page.html",
             {
                 "latest_products": latest_products,
+                "top_selling": top_selling,
                 "categories": top_level_categories,
             },
         )
@@ -82,10 +81,6 @@ class ProductCategoryListView(ListView):
 
         target_category = Category.objects.get(slug=self.slug)
         return target_category.get_all_products()
-        # return Product.objects.filter(
-        #     Q(categories__slug=self.slug)
-        #     | Q(categories__parent_category__slug=self.slug)
-        # )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

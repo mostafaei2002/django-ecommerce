@@ -24,6 +24,32 @@
             </div>
         </div>
     </section>
+    
+    
+    <section id="top-selling-products" class="pt-5 pb-6">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h2 class="fw-bold mb-0">Our Top Selling Products</h2>
+            </div>
+            
+            {% comment %} Latest products go here {% endcomment %}
+            <div class="row g-2">
+                {% for product in top_selling %}
+                    <div class="col-md-3">
+                        <a href="{% url "single_product" product.slug %}" class="text-decoration-none">
+                            <article class="card h-100">
+                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ product.title}}</h4>
+                                    <span class="fs-1 fw-bold">${{ product.price}}</span>
+                                </div>
+                            </article>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
             
     <section id="latest-products" class="pt-5 pb-6">
         <div class="container">
@@ -32,7 +58,7 @@
                 <a href="{% url "product_list" %}" class="btn btn-outline-dark">See More</a>
             </div>
             
-            {% comment %} TODO Latest products go here {% endcomment %}
+            {% comment %} Latest products go here {% endcomment %}
             <div class="row g-2">
                 {% for product in latest_products %}
                     <div class="col-md-3">
