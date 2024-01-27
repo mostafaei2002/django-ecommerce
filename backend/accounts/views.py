@@ -191,7 +191,6 @@ class AddAddressView(LoginRequiredMixin, View):
 
 class DeleteAddressView(LoginRequiredMixin, View):
     def post(self, request):
-        print(request.POST)
         address_id = request.POST["address_id"]
         address = Address.objects.get(pk=address_id)
         address.delete()
