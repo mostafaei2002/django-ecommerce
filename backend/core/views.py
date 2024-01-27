@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -15,21 +16,17 @@ class IndexView(View):
     def get(self, request):
         top_level_categories = Category.objects.filter(parent_category=None)
         latest_products = Product.objects.all().order_by("-updated_at")[:8]
-
-        # TODO Pass in Top Selling products
-        # TODO Pass in some recommended products for logged in users
+        top_selling = Product.get_top_selling()
 
         return render(
             request,
             "core/front_page.html",
             {
                 "latest_products": latest_products,
+                "top_selling": top_selling,
                 "categories": top_level_categories,
             },
         )
-
-    def post(self, request):
-        pass
 
 
 class ProductListView(ListView):
@@ -74,18 +71,35 @@ class ProductDetailView(View):
 
 
 class ProductCategoryListView(ListView):
+    # TODO Create Algorithm to get products
     template_name = "core/product_list.html"
     paginate_by = 10
     context_object_name = "product_list"
 
     def get_queryset(self):
         self.slug = self.kwargs["slug"]
-        return Product.objects.filter(
-            Q(categories__slug=self.slug)
-            | Q(categories__parent_category__slug=self.slug)
-        )
+
+        target_category = Category.objects.get(slug=self.slug)
+        return target_category.get_all_products()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["category"] = self.slug
+        return context
+
+
+class SearchViewList(ListView):
+    template_name = "search/search_list.html"
+    paginate_by = 10
+    context_object_name = "product_list"
+
+    def get_queryset(self):
+        query = self.request.GET["query"]
+        return Product.objects.all().filter(
+            Q(title__contains=query) | Q(description__contains=query)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET["query"]
         return context

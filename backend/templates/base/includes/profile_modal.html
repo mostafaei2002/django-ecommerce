@@ -15,8 +15,11 @@
     {% endif %}
     </a>
     <div class="dropdown-menu" aria-labelledby="profile-modal">
+        {% if user.is_staff %}
+        <a class="dropdown-item" href="{% url "admin:index" %}">Admin</a>
+        <div class="dropdown-divider"></div>
+        {% endif %}
         <a class="dropdown-item" href="{% url "profile" %}">Profile</a>
-        <a class="dropdown-item" href="{% url "profile" %}">Orders</a>
         <div class="dropdown-divider"></div>
         <form action="{% url "logout" %}" method="post">
             {% csrf_token %}

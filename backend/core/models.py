@@ -1,8 +1,8 @@
 from accounts.models import User
+from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
-# TODO add helper functions to models
+from django.db.models import Q, Sum
 
 
 # Product
@@ -17,13 +17,25 @@ class Category(models.Model):
     parent_category = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
-        related_name="sub_categories",
+        related_name="children",
         null=True,
         blank=True,
     )
 
     def __str__(self):
         return self.name
+
+    def get_all_products(self):
+        products = []
+        categories = [self]
+
+        while categories:
+            current = categories.pop()
+
+            categories.extend(list(current.children.all()))
+            products.extend(list(current.products.all()))
+
+        return products
 
     class Meta:
         verbose_name = "category"
@@ -35,7 +47,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     image = models.ImageField(upload_to="products")
     summary = models.TextField(max_length=500, blank=True, null=True)
-    description = models.TextField(max_length=20000, blank=True, null=True)
+    description = RichTextField(max_length=20000, blank=True, null=True)
     price = models.DecimalField(max_digits=12, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -46,6 +58,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_top_selling():
+        top_selling = Product.objects.annotate(
+            qty=Sum("order_item__quantity")
+        ).order_by("-qty")
+        return top_selling
 
 
 class Review(models.Model):

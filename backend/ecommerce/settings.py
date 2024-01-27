@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import mimetypes
 import os
 from pathlib import Path
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     "accounts",
     "shopping_cart",
     "order",
+    "ckeditor",
+    "ckeditor_uploader",
     "crispy_forms",
     "crispy_bootstrap5",
     "jet.dashboard",
@@ -69,7 +72,8 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "shopping_cart.context_processor.cart_context",
+                "core.context_processors.category_context",
+                "shopping_cart.context_processors.cart_context",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -159,3 +163,20 @@ LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 if DEBUG == False:
     CSRF_TRUSTED_ORIGINS = ["https://" + os.environ.get("ALLOWED_HOST")]
+
+
+# CKEditor Settings
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+CKEDITOR_UPLOAD_PATH = "media/"
+
+# Django Jet Settings
+X_FRAME_OPTIONS = "ALLOWALL"
+JET_THEMES = [
+    {
+        "theme": "default",  # theme folder name
+        "color": "#47bac1",  # color of the theme's button in user menu
+        "title": "Default",  # theme title
+    },
+    {"theme": "green", "color": "#44b78b", "title": "Green"},
+    {"theme": "light-green", "color": "#2faa60", "title": "Light Green"},
+]
