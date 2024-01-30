@@ -59,8 +59,12 @@
                     {% include "base/includes/profile_modal.html" %}
                 </li>
             {% else %}
-                <li class="nav-item" style="width: 100px;">
-                    <a class="btn btn-outline-dark" href="{% url "login" %}">Sign In</a>
+                <li class="nav-item" style="">
+                    <button 
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#authModal"
+                    class="btn btn-outline-dark text-nowrap">Sign In/Sign up</button>
                 </li>
             {% endif %}
 
@@ -94,5 +98,6 @@
         </form>
     </div>
 </nav>
-
-
+{% if not user.is_authenticated %}
+    {% include "accounts/includes/authentication_modal.html" %}
+{% endif %}

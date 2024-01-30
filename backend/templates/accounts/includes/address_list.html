@@ -1,0 +1,25 @@
+<div class="col-md-8 offset-md-2">
+  <ul class="list-group w-100">
+    {% for address in address_list %}
+    <li class="list-group-item">
+        <div class="d-flex justify-content-between">
+            <div>{{address.province}}-{{address.city}}-{{address.address}}</div>
+            <div class="d-flex gap-3">
+                <span>{{address.postal_code}}</span>
+                <form action="{% url "delete-address" %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="address_id" value="{{address.id}}">
+                    <button class="btn-close"></button>
+                </form>
+            </div>
+        </div>
+    </li>
+    {% empty %}
+    <p>You haven't added any addresses yet. Click below to add an address.</p>
+    {% endfor %}
+  </ul>
+
+  <div class="d-grid mt-4">
+    <a class="btn btn-outline-dark" href="{% url "add-address" %}">Add Address</a>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="col-md-8 col-offset-2 mx-auto">
+    <ul class="list-group w-100">
+        {% for order in orders %}
+        <li class="list-group-item ">
+            <a href="{% url "order-checkout" order.id %}" class="text-decoration-none text-dark w-100">
+                <div class="hstack justify-content-between">
+                    <div>
+                        <div>Ordered {{order.items.count}} item/items</div>
+                        <div> {{order.created_at}} </div>
+                    </div>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

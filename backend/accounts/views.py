@@ -1,16 +1,21 @@
+import logging
+
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
+from django_htmx.http import HttpResponseClientRedirect
 from shopping_cart.models import Cart
 
-from .forms import AddressForm, UserAvatarForm, UserEditForm, UserRegisterForm
+from . import forms
 from .models import Address, User
 
 # Create your views here.
+logger = logging.getLogger("django")
 
 
 def merge_carts(request, user):
@@ -56,14 +61,14 @@ def merge_carts(request, user):
 
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        user_form = UserEditForm(instance=request.user)
+        user_form = forms.UserEditForm(instance=request.user)
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
 
         return render(
             request,
-            "accounts/user_profile.html",
+            "accounts/user_dashboard.html",
             {
                 "form": user_form,
                 "address_list": address_list,
@@ -74,7 +79,9 @@ class ProfileView(LoginRequiredMixin, View):
 
 class ProfileEditView(LoginRequiredMixin, View):
     def post(self, request):
-        user_form = UserEditForm(request.POST, request.FILES, instance=request.user)
+        user_form = forms.UserEditForm(
+            request.POST, request.FILES, instance=request.user
+        )
 
         if user_form.is_valid():
             user_form.save()
@@ -99,18 +106,16 @@ class ProfileEditView(LoginRequiredMixin, View):
 
 class UserRegisterView(View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return redirect(reverse("home"))
-
-        register_form = UserRegisterForm()
-
-        return render(request, "accounts/register.html", {"form": register_form})
+        register_form = forms.UserRegisterForm()
+        return render(
+            request, "accounts/register_form.html", {"register_form": register_form}
+        )
 
     def post(self, request):
         if request.user.is_authenticated:
             return redirect(reverse("home"))
 
-        register_form = UserRegisterForm(request.POST)
+        register_form = forms.UserRegisterForm(request.POST)
 
         if register_form.is_valid():
             form_data = register_form.clean()
@@ -125,24 +130,22 @@ class UserRegisterView(View):
                 phone=form_data["phone"],
                 password=password,
             )
-
             # Login registered user & handle cart logic
             user = authenticate(request, username=username, password=password)
             merge_carts(request, user)
             if user is not None:
                 login(request, user)
-                return redirect(reverse("profile"))
+                messages.success("Account created successfully.")
+                return HttpResponseClientRedirect(reverse("home"))
 
-        return render(request, "accounts/register.html", {"form": register_form})
+        return render(
+            request, "accounts/register_form.html", {"register_form": register_form}
+        )
 
 
 class UserLoginView(View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return redirect(reverse("home"))
-
-        login_form = AuthenticationForm()
-        return render(request, "accounts/login.html", {"form": login_form})
+        return render(request, "accounts/login_form.html")
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -160,14 +163,18 @@ class UserLoginView(View):
         if user is not None:
             login(request, user)
 
-            return redirect(reverse("profile"))
+            messages.success(request, "You are Logged in.")
+            return HttpResponseClientRedirect(redirect_to=reverse("home"))
         else:
             login_form = AuthenticationForm({"username": username, "password": ""})
-            return render(
-                request,
-                "accounts/login.html",
-                context={"form": login_form, "error": "Your credentials are invalid."},
-            )
+            return HttpResponse("<p class='text-danger mb-0'>Credentials Invalid!</p>")
+
+
+class UserLogoutView(View):
+    def post(self, request):
+        logout(request)
+        messages.success(request, "You are logged out.")
+        return redirect(reverse("home"))
 
 
 class AddAddressView(LoginRequiredMixin, View):
