@@ -6,7 +6,7 @@ services:
         ports:
             - 8000:8000
         volumes:
-            - .:/app
+            - ./backend:/app
         environment:
             SECRET_KEY: "django-insecure-kt+aij#w28!@hz(0@(x4ef$2_4d!1mr++kntqennmk!d0w^uyt"
             DATABASE_NAME: "shop"
