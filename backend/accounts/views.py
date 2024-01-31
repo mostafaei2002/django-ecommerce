@@ -60,12 +60,21 @@ def merge_carts(request, user):
 
 
 class ProfileView(LoginRequiredMixin, View):
-    def get(self, request):
-        user_form = forms.UserEditForm(instance=request.user)
+    def post(self, request):
+        user_form = forms.UserEditForm(
+            request.POST, request.FILES, instance=request.user
+        )
+
+        if user_form.is_valid():
+            user_form.save()
+
+            messages.success(request, "Your profile was updated successfully.")
+            return redirect(reverse("dashboard"))
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
 
+        messages.error(request, "Invalid inputs.")
         return render(
             request,
             "accounts/user_dashboard_page.html",
@@ -78,21 +87,12 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 class DashboardView(LoginRequiredMixin, View):
-    def post(self, request):
-        user_form = forms.UserEditForm(
-            request.POST, request.FILES, instance=request.user
-        )
-
-        if user_form.is_valid():
-            user_form.save()
-
-            messages.success(request, "Your profile was updated successfully.")
-            return redirect(reverse("profile"))
+    def get(self, request):
+        user_form = forms.UserEditForm(instance=request.user)
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
 
-        messages.error(request, "Invalid inputs.")
         return render(
             request,
             "accounts/user_dashboard_page.html",
@@ -177,7 +177,7 @@ class UserLogoutView(View):
         return redirect(reverse("home"))
 
 
-class AddAddressView(LoginRequiredMixin, View):
+class AddressView(LoginRequiredMixin, View):
     def get(self, request):
         address_form = AddressForm()
         return render(request, "accounts/add_address.html", {"form": address_form})
@@ -195,16 +195,13 @@ class AddAddressView(LoginRequiredMixin, View):
 
         return render(request, "accounts/add_address.html", {"form": address_form})
 
+    def put(self, request, id):
+        pass
 
-class DeleteAddressView(LoginRequiredMixin, View):
-    def post(self, request):
+    def delete(self, request, id):
         address_id = request.POST["address_id"]
         address = Address.objects.get(pk=address_id)
         address.delete()
 
         messages.success(request, "Address deleted successfully.")
         return redirect("profile")
-
-
-class EditAddressView(View):
-    pass
