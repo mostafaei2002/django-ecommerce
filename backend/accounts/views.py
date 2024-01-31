@@ -68,7 +68,7 @@ class ProfileView(LoginRequiredMixin, View):
 
         return render(
             request,
-            "accounts/user_dashboard.html",
+            "accounts/user_dashboard_page.html",
             {
                 "form": user_form,
                 "address_list": address_list,
@@ -77,7 +77,7 @@ class ProfileView(LoginRequiredMixin, View):
         )
 
 
-class ProfileEditView(LoginRequiredMixin, View):
+class DashboardView(LoginRequiredMixin, View):
     def post(self, request):
         user_form = forms.UserEditForm(
             request.POST, request.FILES, instance=request.user
@@ -95,7 +95,7 @@ class ProfileEditView(LoginRequiredMixin, View):
         messages.error(request, "Invalid inputs.")
         return render(
             request,
-            "accounts/user_profile.html",
+            "accounts/user_dashboard_page.html",
             {
                 "form": user_form,
                 "address_list": address_list,

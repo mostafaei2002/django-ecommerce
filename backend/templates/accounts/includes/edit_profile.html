@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
 <div class="col-md-6 offset-md-3">
-    <form action="{% url "edit-profile" %}" method="post" enctype="multipart/form-data">
+    <form action="{% url "dashboard" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{form|crispy}}
         <div class="d-grid"><button class="btn btn-outline-dark">Submit</button></div>
