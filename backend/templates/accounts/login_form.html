@@ -20,19 +20,26 @@
         </div>
     </div>
     <div class="modal-footer">
-            <div class="d-flex w-100 gap-2">
+            <div class="w-100 d-flex gap-2">
                 <button type="submit" class="btn btn-outline-dark w-100"
                 hx-post={% url "login" %}
                 hx-trigger="click"
                 hx-target="#message"
                 hx-swap="innerHTML"
-                >Sign in</button>
+                >
+                <span class="btn-text">Sign in</span>
+                {% include "base/includes/htmx_indicator.html" %}
+            </button>
+                
                 <a type="submit" class="btn btn-outline-primary w-50"
                     hx-get={% url "register" %}
                     hx-trigger="click"
                     hx-target=".modal-content"
                     hx-swap="innerHTML"
-                >Sign up</a>
+                >
+                <span class="btn-text">Sign up</span>
+                {% include "base/includes/htmx_indicator.html" %}
+            </a>
             </div>
     </div>
 </form>

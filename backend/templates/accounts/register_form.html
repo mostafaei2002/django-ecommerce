@@ -25,13 +25,19 @@
                 hx-trigger="click"
                 hx-target=".modal-content"
                 hx-swap="innerHTML"
-                >Sign up</button>
+                >
+                <span class="btn-text">Sign up</span>
+                {% include "base/includes/htmx_indicator.html" %}
+            </button>
                 <a type="submit" class="btn btn-outline-primary w-50"
                     hx-get={% url "login" %}
                     hx-trigger="click"
                     hx-target=".modal-content"
                     hx-swap="innerHTML"
-                >sign in</a>
+                >
+                <div class="btn-text">Sign in</div>
+                {% include "base/includes/htmx_indicator.html" %}
+            </a>
             </div>
     </div>
 </form>
