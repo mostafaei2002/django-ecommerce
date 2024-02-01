@@ -184,6 +184,16 @@ class AddressFormView(LoginRequiredMixin, View):
             request, "accounts/address_form.html", {"address_form": address_form}
         )
 
+    def post(self, request):
+        obj_id = request.POST["id"]
+        obj = Address.objects.get(pk=obj_id)
+        address_form = forms.AddressForm(instance=obj)
+        return render(
+            request,
+            "accounts/address_edit_form.html",
+            {"address_form": address_form, "address_id": obj_id},
+        )
+
 
 class AddressListView(LoginRequiredMixin, View):
     def get(self, request):
@@ -209,18 +219,54 @@ class AddressView(LoginRequiredMixin, View):
             new_address.save()
 
             messages.success(request, "Address added successfully.")
-            return HttpResponseClientRefresh()
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
 
         messages.error(request, "Please enter a valid address.")
-        return HttpResponse(status=204)
+        return render(
+            request, "accounts/address_form.html", {"address_form": address_form}
+        )
 
-    def put(self, request, id):
-        pass
+    def put(self, request):
+        data = QueryDict(request.body)
+        obj_id = data.get("address_id")
+        logger.info(obj_id)
 
-    def delete(self, request, id):
-        address_id = request.POST["address_id"]
-        address = Address.objects.get(pk=address_id)
-        address.delete()
+        obj = Address.objects.get(pk=obj_id)
+        address_form = forms.AddressForm(data, instance=obj)
+        if address_form.is_valid():
+            address_form.save()
+            messages.success(request, "Address updated successfully")
 
-        messages.success(request, "Address deleted successfully.")
-        return redirect("profile")
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
+
+        messages.error(request, "Failed to update address. Invalid input.")
+        return render(
+            request, "accounts/address_edit_form.html", {"address_form": address_form}
+        )
+
+    def delete(self, request):
+        data = QueryDict(request.body)
+        obj_id = data.get("id")
+        obj = Address.objects.get(pk=obj_id)
+        if obj.user == request.user:
+            obj.delete()
+            messages.success(request, "Adderss deleted successfully.")
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
+        else:
+            messages.error(request, "You're not authorized.")
+            return HttpResponse(status=204)

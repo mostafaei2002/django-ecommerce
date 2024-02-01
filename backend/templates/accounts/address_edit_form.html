@@ -1,8 +1,8 @@
 {% load crispy_forms_tags %}
 <div class="col-md-8 offset-md-2">
     <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <input type="hidden" name="address_id" value={{address_id}}>
         {{address_form|crispy}}
-
         <div class="d-flex gap-2">
             <button 
                 type="button"
@@ -15,8 +15,9 @@
             </button>
 
             <button 
+                type="submit"
                 class="btn btn-outline-dark w-50"
-                hx-post={% url "address" %}
+                hx-put={% url "address" %}
                 hx-target="#address-container"
             >
                 <span class="btn-text">Submit</span>
