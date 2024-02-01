@@ -26,7 +26,7 @@
     {% include "shopping_cart/shopping_cart.html" %}
     {% block body %}{% endblock %}
     {% include "base/includes/footer.html" %}
-    <div data-message-container class="position-fixed" style="top: 10vh; right: 2vh;">
+    <div data-message-container class="position-fixed" style="bottom: 2vh; right: 2vh;">
         {% for message in messages %}
             {% include "base/includes/message.html" %}
         {% endfor %}

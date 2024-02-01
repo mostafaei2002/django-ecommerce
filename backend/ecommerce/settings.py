@@ -14,6 +14,7 @@ import mimetypes
 import os
 from pathlib import Path
 
+from django.contrib import messages
 from django.forms.renderers import TemplatesSetting
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -184,4 +185,8 @@ JET_THEMES = [
     {"theme": "light-green", "color": "#2faa60", "title": "Light Green"},
 ]
 
-# HTMX
+# Message Tags
+MESSAGE_TAGS = {
+    messages.SUCCESS: "success",
+    messages.ERROR: "danger",
+}
