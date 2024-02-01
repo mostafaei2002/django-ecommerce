@@ -1,4 +1,5 @@
 import logging
+from io import BytesIO
 
 from django.contrib import messages
 from django_htmx.http import trigger_client_event
@@ -7,7 +8,7 @@ logger = logging.getLogger("django")
 
 
 def HtmxMessagesMiddleware(get_response):
-    # One-time configuration and initialization.
+    # Middleware to handle htmx messages
 
     def middleware(request):
         # Code to be executed for each request before
@@ -19,8 +20,10 @@ def HtmxMessagesMiddleware(get_response):
         # the view is called.
 
         # If No Redirect then trigger the messages event
-        if not response.headers.get("HX-Redirect") and not response.headers.get(
-            "Location"
+        if (
+            not response.headers.get("HX-Redirect")
+            and not response.headers.get("Location")
+            and not response.headers.get("HX-Refresh")
         ):
             response = trigger_client_event(
                 response,

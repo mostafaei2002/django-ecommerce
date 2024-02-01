@@ -1,14 +1,20 @@
 import logging
+from io import BytesIO
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.core.files import File
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django_htmx.http import HttpResponseClientRedirect, trigger_client_event
+from django_htmx.http import (
+    HttpResponseClientRedirect,
+    HttpResponseClientRefresh,
+    trigger_client_event,
+)
 from shopping_cart.models import Cart
 
 from . import forms
@@ -61,23 +67,21 @@ def merge_carts(request, user):
 
 class ProfileView(LoginRequiredMixin, View):
     def put(self, request):
-        user_form = forms.UserEditForm(
-            request.POST, request.FILES, instance=request.user
-        )
+        data = BytesIO(request.body)
+        self.PUT, self.FILES = request.parse_file_upload(request.META, data)
+
+        user_form = forms.UserEditForm(self.PUT, self.FILES, instance=request.user)
 
         if user_form.is_valid():
             user_form.save()
 
             messages.success(request, "Profile updated successfully.")
+            return HttpResponseClientRefresh()
 
-            response = HttpResponse(status=204)
-            return response
         messages.error(request, "Invalid inputs.")
-        user_form = forms.UserEditForm(instance=request.user)
-        response = render(
+        return render(
             request, "accounts/includes/edit_profile.html", {"profile_form": user_form}
         )
-        return response
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -117,10 +121,7 @@ class UserRegisterView(View):
             password = form_data["password"]
 
             new_user = User.objects.create_user(
-                first_name=form_data["first_name"],
-                last_name=form_data["last_name"],
                 username=username,
-                email=form_data["email"],
                 phone=form_data["phone"],
                 password=password,
             )
@@ -129,7 +130,7 @@ class UserRegisterView(View):
             merge_carts(request, user)
             if user is not None:
                 login(request, user)
-                messages.success("Account created successfully.")
+                messages.success(request, "Account created successfully.")
                 return HttpResponseClientRedirect(reverse("home"))
 
         return render(
@@ -161,7 +162,8 @@ class UserLoginView(View):
             return HttpResponseClientRedirect(redirect_to=reverse("home"))
         else:
             login_form = AuthenticationForm({"username": username, "password": ""})
-            return HttpResponse("<p class='text-danger mb-0'>Credentials Invalid!</p>")
+            messages.error(request, "Your credentials are invalid.")
+            return HttpResponse(status=204)
 
 
 class UserLogoutView(View):

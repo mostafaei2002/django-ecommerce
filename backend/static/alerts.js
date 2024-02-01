@@ -15,7 +15,6 @@ htmx.on("messages", function (e) {
     var messages = e.detail.value;
 
     messages.forEach((msg) => {
-        console.log(msg.tags, msg.message);
         var alert = createAlert(msg.message, msg.tags);
         messageContainer.insertAdjacentHTML("beforeEnd", alert);
     });

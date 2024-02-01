@@ -14,7 +14,6 @@
     {% csrf_token %}
     <div class="modal-body">
         {{ login_form|crispy }}
-        <div id="message"></div>
         <div>
             <a class="text-muted text-decoration-none" href="#">I have forgotten my password.</a>
         </div>
@@ -24,8 +23,6 @@
                 <button type="submit" class="btn btn-outline-dark w-100"
                 hx-post={% url "login" %}
                 hx-trigger="click"
-                hx-target="#message"
-                hx-swap="innerHTML"
                 >
                 <span class="btn-text">Sign in</span>
                 {% include "base/includes/htmx_indicator.html" %}
