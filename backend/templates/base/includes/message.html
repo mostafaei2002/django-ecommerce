@@ -1,0 +1,5 @@
+<div class="alert
+{% if message.tags %}
+alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}
+{% endif %} message-animation" 
+>{{message}}</div>

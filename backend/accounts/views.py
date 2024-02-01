@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django_htmx.http import HttpResponseClientRedirect
+from django_htmx.http import HttpResponseClientRedirect, trigger_client_event
 from shopping_cart.models import Cart
 
 from . import forms
@@ -67,22 +67,24 @@ class ProfileView(LoginRequiredMixin, View):
 
         if user_form.is_valid():
             user_form.save()
-
-            messages.success(request, "Your profile was updated successfully.")
-            return redirect(reverse("dashboard"))
-
-        address_list = request.user.addresses.all()
-        orders = request.user.orders.all()
+            messages.success(request, "Profile updated successfully.")
+            for message in messages.get_messages(request):
+                logger.info(message)
+            response = HttpResponse(status=204)
+            return trigger_client_event(
+                response,
+                "messages",
+                [
+                    {"message": message.message, "tags": message.tags}
+                    for message in messages.get_messages(request)
+                ],
+            )
+        logger.info("Form was invalid")
 
         messages.error(request, "Invalid inputs.")
         return render(
             request,
-            "accounts/user_dashboard_page.html",
-            {
-                "form": user_form,
-                "address_list": address_list,
-                "orders": orders,
-            },
+            "accounts/includes/edit_profile.html",
         )
 
 
@@ -97,7 +99,7 @@ class DashboardView(LoginRequiredMixin, View):
             request,
             "accounts/user_dashboard_page.html",
             {
-                "form": user_form,
+                "profile_form": user_form,
                 "address_list": address_list,
                 "orders": orders,
             },

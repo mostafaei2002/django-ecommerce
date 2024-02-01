@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "jet.dashboard",
     "jet",
+    "django_htmx",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "ecommerce.urls"
@@ -181,3 +183,5 @@ JET_THEMES = [
     {"theme": "green", "color": "#44b78b", "title": "Green"},
     {"theme": "light-green", "color": "#2faa60", "title": "Light Green"},
 ]
+
+# HTMX

@@ -1,4 +1,5 @@
 {% load static%}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +15,9 @@
     <link rel="stylesheet" href="{% static "bootstrap.css" %}">
     <link rel="stylesheet" href="{% static "global.css" %}">
     <script defer src="{% static "bootstrap.js" %}"></script>
-    <script defer src="{% static "main.js" %}"></script>
-    <script defer src="{% static "htmx.js" %}"></script>
+    <script defer src="{% static "htmx.min.js" %}"></script>
+    <script defer src="{% static "alerts.js"%}"></script>
+    {% django_htmx_script %}
 
     {% block head %}{% endblock %}
 </head>
@@ -24,13 +26,11 @@
     {% include "shopping_cart/shopping_cart.html" %}
     {% block body %}{% endblock %}
     {% include "base/includes/footer.html" %}
-    {% for message in messages %}
-        <div class="alert
-        {% if message.tags %}
-        alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}
-        {% endif %}
-        position-fixed hide-after-5 fade show" style="bottom: 10vh; right: 2vh;">{{message}}</div>
-    {% endfor %}
+    <div data-message-container class="position-fixed" style="top: 10vh; right: 2vh;">
+        {% for message in messages %}
+            {% include "base/includes/message.html" %}
+        {% endfor %}
+    </div>
 </body>
 </html>
 
