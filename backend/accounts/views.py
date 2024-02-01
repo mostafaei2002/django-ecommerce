@@ -177,13 +177,31 @@ class UserLogoutView(View):
         return redirect(reverse("home"))
 
 
+class AddressFormView(LoginRequiredMixin, View):
+    def get(self, request):
+        address_form = forms.AddressForm()
+        return render(
+            request, "accounts/address_form.html", {"address_form": address_form}
+        )
+
+
+class AddressListView(LoginRequiredMixin, View):
+    def get(self, request):
+        address_list = request.user.addresses.all()
+        return render(
+            request,
+            "accounts/includes/address_list.html",
+            {"address_list": address_list},
+        )
+
+
+# Manage Single Addresses
 class AddressView(LoginRequiredMixin, View):
     def get(self, request):
-        address_form = AddressForm()
-        return render(request, "accounts/add_address.html", {"form": address_form})
+        pass
 
     def post(self, request):
-        address_form = AddressForm(request.POST)
+        address_form = forms.AddressForm(request.POST)
 
         if address_form.is_valid():
             new_address = address_form.save(commit=False)
@@ -191,9 +209,10 @@ class AddressView(LoginRequiredMixin, View):
             new_address.save()
 
             messages.success(request, "Address added successfully.")
-            return redirect(reverse("profile"))
+            return HttpResponseClientRefresh()
 
-        return render(request, "accounts/add_address.html", {"form": address_form})
+        messages.error(request, "Please enter a valid address.")
+        return HttpResponse(status=204)
 
     def put(self, request, id):
         pass

@@ -29,7 +29,9 @@
 
               {% comment %} Orders Tab {% endcomment %}
               <div data-hash="#addresses" class="tab-pane fade" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-address-tab" tabindex="0">
-                  {% include "accounts/includes/address_list.html" %}
+                    <div class="col-md-8 offset-md-2" id="address-container">
+                      {% include "accounts/includes/address_list.html" %}
+                    </div>
               </div>
 
             </div>
