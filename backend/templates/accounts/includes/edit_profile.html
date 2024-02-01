@@ -1,16 +1,13 @@
 {% load crispy_forms_tags %}
-<div class="col-md-6 offset-md-3" id="form-container">
-    <form>
-        {% csrf_token %}
-        {{profile_form|crispy}}
-        <div class="d-grid">
-            <button 
-            type="submit"
-            class="btn btn-outline-dark"
-            hx-post={% url "profile" %}
-            hx-target="#form-container"
-            hx-encoding="multipart/form"
-            >Submit</button>
-        </div>
-    </form>
-</div>
+<form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="form-container">
+    {{profile_form|crispy}}
+    <div class="d-grid">
+        <button 
+        type="submit"
+        class="btn btn-outline-dark"
+        hx-put={% url "profile" %}
+        hx-target="#form-container"
+        hx-encoding="multipart/form"
+        >Submit</button>
+    </div>
+</form>

@@ -60,32 +60,24 @@ def merge_carts(request, user):
 
 
 class ProfileView(LoginRequiredMixin, View):
-    def post(self, request):
+    def put(self, request):
         user_form = forms.UserEditForm(
             request.POST, request.FILES, instance=request.user
         )
 
         if user_form.is_valid():
             user_form.save()
-            messages.success(request, "Profile updated successfully.")
-            for message in messages.get_messages(request):
-                logger.info(message)
-            response = HttpResponse(status=204)
-            return trigger_client_event(
-                response,
-                "messages",
-                [
-                    {"message": message.message, "tags": message.tags}
-                    for message in messages.get_messages(request)
-                ],
-            )
-        logger.info("Form was invalid")
 
+            messages.success(request, "Profile updated successfully.")
+
+            response = HttpResponse(status=204)
+            return response
         messages.error(request, "Invalid inputs.")
-        return render(
-            request,
-            "accounts/includes/edit_profile.html",
+        user_form = forms.UserEditForm(instance=request.user)
+        response = render(
+            request, "accounts/includes/edit_profile.html", {"profile_form": user_form}
         )
+        return response
 
 
 class DashboardView(LoginRequiredMixin, View):

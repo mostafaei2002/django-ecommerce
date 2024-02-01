@@ -15,9 +15,11 @@
             <div class="tab-content w-100" id="v-pills-tabContent">
 
                 {% comment %} Profile Tab {% endcomment %}
-              <div data-hash="#profile" class="tab-pane fade show active mx-auto" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
+            <div data-hash="#profile" class="tab-pane fade show active mx-auto" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
+                <div class="col-md-6 offset-md-3" >
                   {% include "accounts/includes/edit_profile.html" %}
-              </div>
+                </div>
+            </div>
               
               {% comment %} Orders Tab {% endcomment %}
               <div data-hash="#orders" class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
