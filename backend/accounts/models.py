@@ -9,7 +9,7 @@ from django.db import models
 class User(AbstractUser):
     phone = models.CharField(
         validators=[
-            RegexValidator("[0-9]+"),
+            RegexValidator("[0-9]+$"),
         ],
         unique=True,
     )

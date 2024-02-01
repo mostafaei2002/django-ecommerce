@@ -69,13 +69,17 @@ class ProfileView(LoginRequiredMixin, View):
     def put(self, request):
         data = BytesIO(request.body)
         self.PUT, self.FILES = request.parse_file_upload(request.META, data)
-
         user_form = forms.UserEditForm(self.PUT, self.FILES, instance=request.user)
+
+        if not user_form.changed_data:
+            messages.error(request, "Please change your data then submit.")
+            return HttpResponse(status=204)
 
         if user_form.is_valid():
             user_form.save()
 
             messages.success(request, "Profile updated successfully.")
+
             return HttpResponseClientRefresh()
 
         messages.error(request, "Invalid inputs.")
