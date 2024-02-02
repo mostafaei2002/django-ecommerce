@@ -31,7 +31,7 @@ class IndexView(View):
 
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
-    template_name = "core/product_list.html"
+    template_name = "core/products_page.html"
     model = Product
     paginate_by = 12
     context_object_name = "product_list"

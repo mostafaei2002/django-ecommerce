@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+<main>
+    <section class="pt-7 pb-4">
+        <div class="container">
+            <div class="row g-2">
+                {% if category %}
+                    <h1 class="fw-bold mb-1">{{ category|title }} Category Products</h1>
+                {% else %}
+                    <h1 class="fw-bold mb-1">Our Produtcs</h1>
+                {% endif %}
+
+                {% include "core/includes/product_list.html" %}
+
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

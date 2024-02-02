@@ -5,8 +5,8 @@
 <section class="py-7" style="min-height: 85vh;">
     <div class="container">
         <h2 class="text-center">Welcome back {{request.user.username}}</h2>
-        <div class="d-flex align-items-start">
-            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <div class="d-flex flex-column flex-md-row align-items-start">
+            <div class="nav flex-row flex-md-column mb-4 mb-md-0 nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               <button data-hash="#profile" class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</button>
               <button data-hash="#orders" class="nav-link" id="v-pills-order-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">Orders</button>
               <button data-hash="#addresses" class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address" aria-selected="false">Address</button>
