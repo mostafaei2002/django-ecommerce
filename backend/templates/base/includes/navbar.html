@@ -3,34 +3,6 @@
         <a class="navbar-brand text-primary fw-bold fs-5" href="{% url "home" %}">MCommerce</a>
         
         
-        <div class="dropdown me-auto ms-4">
-            <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="dropdownId"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                Categories
-                </a>
-            <div
-                class="dropdown-menu"
-                aria-labelledby="dropdownId"
-            >
-            {% comment %} TODO Top Level Category Items Go Here {% endcomment %}
-            {% for category in global_categories %}
-                <a class="dropdown-item" href="{% url "category" category.slug %}"
-                    >{{ category.name }}</a
-                >
-            {% endfor %}
-            </div>
-        </div>
 
 
         {% comment %} Search Bar {% endcomment %}

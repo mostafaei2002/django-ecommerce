@@ -1,0 +1,17 @@
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+    <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% include "core/includes/star_rating_form.html" %}
+        {{ review_form|crispy }}
+        <button 
+        class="btn btn-outline-dark"
+        hx-post={% url "single_product" product.slug %}
+        >Submit Review</button>
+    </form>
+{% else %}
+    <p>
+        Login in to submit a review.
+        <a class="mt-3 cursor-pointer" href="#" data-bs-toggle="modal" data-bs-target="#authModal">Click here to login.</a>
+    </p>
+{% endif %}

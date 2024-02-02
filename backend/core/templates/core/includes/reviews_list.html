@@ -1,0 +1,13 @@
+{% for review in reviews %}
+    <div class="col-10 offset-1">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Review by {{ review.user}}</h5>
+            <span class="fw-bold fs-4">{{ review.rating }}/5</span>
+        </div>
+        <p class="text-muted"> on {{ review.created_at}}</p>
+        <p>{{ review.comment|linebreaks }}</p>
+    </div>
+    <hr>
+{% empty %}
+<p>No reviews are submitted yet. Be the first one to review this product.</p>
+{% endfor %}

@@ -1,14 +1,18 @@
 import logging
 
+from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
+from django_htmx.http import HttpResponseClientRedirect, HttpResponseClientRefresh
 
 from .forms import ProductQuantityForm, ReviewForm
 from .models import Category, Product
+
+logger = logging.getLogger("django")
 
 
 # Create your views here.
@@ -31,7 +35,6 @@ class IndexView(View):
 
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
-    template_name = "core/products_page.html"
     model = Product
     paginate_by = 12
     context_object_name = "product_list"
@@ -57,35 +60,26 @@ class ProductDetailView(View):
         )
 
     def post(self, request, slug):
-        user = self.request.user
         product = Product.objects.get(slug=slug)
-        review_form = ReviewForm(self.request.POST)
+        review_form = ReviewForm(request.POST)
+        rating = request.POST.get("rating")
 
-        if review_form.is_valid():
+        if review_form.is_valid() and rating:
             new_review = review_form.save(commit=False)
-            new_review.user = user
+            new_review.user = request.user
+            new_review.rating = rating
             new_review.product = product
+            messages.success(request, "Review added successfully.")
             new_review.save()
 
-        return redirect("single_product", slug=slug)
+            return HttpResponseClientRefresh()
 
+        if not rating:
+            messages.error(request, "Please rate the product.")
 
-class ProductCategoryListView(ListView):
-    # TODO Create Algorithm to get products
-    template_name = "core/product_list.html"
-    paginate_by = 10
-    context_object_name = "product_list"
+        messages.error(request, "Please enter a comment")
 
-    def get_queryset(self):
-        self.slug = self.kwargs["slug"]
-
-        target_category = Category.objects.get(slug=self.slug)
-        return target_category.get_all_products()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["category"] = self.slug
-        return context
+        return HttpResponse(status=204)
 
 
 class SearchViewList(ListView):

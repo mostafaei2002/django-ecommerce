@@ -87,6 +87,7 @@
                         {% endif %}
                     </div>
                     {% endif %}
+                    {% comment %} Reviews Pane {% endcomment %}
                     <div
                         class="tab-pane fade {% if not product.description %}show active{% endif %}"
                         id="reviews"
@@ -94,34 +95,12 @@
                     >
                         {% comment %} Reviews Tab {% endcomment %}
                         <div>
-                            {% comment %} TODO Show review form if authenticated Otherwise show Login to review {% endcomment %}
-                            <div class="row mb-6">
-                                {% if user.is_authenticated %}
-                                    <form action="" method="post">
-                                        {% csrf_token %}
-                                        {{ review_form|crispy }}
-                                        <button class="btn btn-outline-dark">Submit Review</button>
-                                    </form>
-                                {% else %}
-                                    <p>Login in to submit a review.</p>
-                                    <div><a class="btn btn-outline-dark mt-3" href="{% url "login" %}">Login</a></div>
-                                {% endif %}
+                            <div class="row mb-6 text-center" id="review_form">
+                                {% include "core/includes/review_form.html" %}
                             </div>
                             {% comment %} TODO reviews {% endcomment %}
-                            <div class="row g-5">
-                                {% for review in reviews %}
-                                    <div class="col-10 offset-1">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h5 class="mb-0">Review by {{ review.user}}</h5>
-                                            <span class="fw-bold fs-4">{{ review.rating }}/5</span>
-                                        </div>
-                                        <p class="text-muted"> on {{ review.created_at}}</p>
-                                        <p>{{ review.comment|linebreaks }}</p>
-                                    </div>
-                                    <hr>
-                                {% empty %}
-                                <p>No reviews are submitted yet. Be the first one to review this product.</p>
-                                {% endfor %}
+                            <div class="row g-2">
+                                {% include "core/includes/reviews_list.html" %}
                             </div>
                         </div>
                     </div>
