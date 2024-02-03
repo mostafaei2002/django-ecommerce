@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -39,7 +40,7 @@ class ProductListView(ListView):
         query = request.GET.get("query")
         order_by = request.GET.get("order_by")
         category = request.GET.get("category")
-        page = request.GET.get("page")
+        page = request.GET.get("page") or 1
 
         products = Product.objects.all()
 
@@ -54,10 +55,15 @@ class ProductListView(ListView):
         if order_by:
             pass
 
-        if page:
-            pass
+        product_paginator = Paginator(products, 12)
+        products = product_paginator.page(page).object_list
 
-        return render(request, "core/products_page.html", {"product_list": products})
+        if request.htmx:
+            template_name = "core/includes/product_list.html"
+        else:
+            template_name = "core/products_page.html"
+
+        return render(request, template_name, {"product_list": products})
 
 
 class ProductDetailView(View):

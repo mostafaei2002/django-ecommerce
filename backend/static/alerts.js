@@ -14,7 +14,7 @@ htmx.on("messages", function (e) {
     var messageContainer = document.querySelector("[data-message-container]");
     var messages = e.detail.value;
 
-    messages.forEach((msg) => {
+    messages?.forEach((msg) => {
         var alert = createAlert(msg.message, msg.tags);
         messageContainer.insertAdjacentHTML("beforeEnd", alert);
     });

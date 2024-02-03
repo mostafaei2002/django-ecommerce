@@ -2,6 +2,7 @@ import random
 
 from core.models import Category, Product
 from django.core.management.base import BaseCommand
+from django.template.defaultfilters import slugify
 from faker import Faker
 
 
@@ -33,7 +34,7 @@ class Command(BaseCommand):
             # )
             Product.objects.create(
                 title=product_title,
-                slug=product_title.lower().replace(" ", "-"),
+                slug=slugify(product_title),
                 image="products/default.png",
                 summary=product_summary,
                 description=product_description,
