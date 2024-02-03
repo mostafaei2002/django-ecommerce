@@ -1,4 +1,6 @@
 from core.models import Product
+from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, reverse
 from django.views import View
 
@@ -7,11 +9,12 @@ from .models import Cart, CartItem
 # Create your views here.
 
 
-class CartAddView(View):
+class CartView(View):
     # TODO add in user authentication
-    def post(self, request, id):
+    def post(self, request):
+        obj_id = request.POST.get("id")
         product_quantity = int(request.POST["quantity"])
-        product = Product.objects.get(pk=id)
+        product = Product.objects.get(pk=obj_id)
         user = request.user
 
         # Get the active cart for authenticated and non-authenticated users
@@ -44,13 +47,14 @@ class CartAddView(View):
             )
 
         cart_item.save()
+        messages.success(request, "Product added to cart successfully.")
 
-        return redirect(request.META["HTTP_REFERER"])
+        return HttpResponse(status=204)
 
+    def put(self, request):
+        pass
 
-class CartDeleteView(View):
-    # TODO add in user authentication
-    def post(self, request, id):
+    def delete(self, request):
         cart_item = CartItem.objects.get(pk=id)
         if request.user == cart_item.cart.created_by:
             cart_item.delete()
@@ -58,9 +62,3 @@ class CartDeleteView(View):
             return redirect(reverse("home"))
 
         return redirect(request.META["HTTP_REFERER"])
-
-
-class CartEditQuantityView(View):
-    # TODO Implement interactive quantity modification with vanilla JS
-    def post(self, request, id):
-        pass

@@ -8,7 +8,7 @@
 <main>
     <article class="pt-8 pb-7">
         <div class="container">
-            <div class="row shadow rounded-5 overflow-hidden">
+            <div class="row shadow-sm rounded-5 overflow-hidden">
                 <div class="col-md-6 px-0">
                     <div class="image-container">
                         <img
@@ -29,10 +29,14 @@
                                 <p class="lead mt-5">{{ product.summary }}</p>
                             </div>
                             
-                            <form action="{% url "add-to-cart" product.id%}" method="post">
+                            <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                <input type="hidden" name="id" value={{product.id}}>
                                 {{quantity_form|crispy}}
                                 <div class="d-grid">
-                                    <button class="btn btn-lg btn-outline-dark px-4">Add To Cart</button>
+                                    <button 
+                                        class="btn btn-lg btn-outline-dark px-4"
+                                        hx-post={% url "cart" %}
+                                    >Add To Cart</button>
                                 </div>
                                 </form>
                         </div>
@@ -77,7 +81,7 @@
                 </ul>
                 
                 <!-- Tab panes -->
-                <div class="tab-content mx-5">
+                <div class="tab-content mx-md-5">
                     {% if product.description %}
                     <div
                         class="tab-pane fade show active"
@@ -100,10 +104,14 @@
                         {% comment %} Reviews Tab {% endcomment %}
                         <div>
                             <div class="row mb-6 text-center" id="review_form">
-                                <div class="col-md-8 offset-md-2">{% include "core/includes/review_form.html" %}</div>
+                                <div class="col-12 col-md-8 offset-md-2">
+                                    {% include "core/includes/review_form.html" %}
+                                </div>
                             </div>
                             <div class="row g-2">
-                                {% include "core/includes/reviews_list.html" %}
+                                <div class="col-12">
+                                    {% include "core/includes/reviews_list.html" %}
+                                </div>
                             </div>
                         </div>
                     </div>

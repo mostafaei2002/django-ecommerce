@@ -2,7 +2,10 @@
 
 {% if user.is_authenticated %}
     <h3 class="text-start">Writing a review as {{user.username}}</h3>
-    <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <form 
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    class="w-100 text-start"
+    >
         {{ review_form|crispy }}
         {% include "core/includes/star_rating_form.html" %}
         <div class="d-grid">
