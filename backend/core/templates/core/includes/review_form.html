@@ -1,13 +1,19 @@
 {% load crispy_forms_tags %}
 
 {% if user.is_authenticated %}
+    <h3 class="text-start">Writing a review as {{user.username}}</h3>
     <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-        {% include "core/includes/star_rating_form.html" %}
         {{ review_form|crispy }}
-        <button 
-        class="btn btn-outline-dark"
-        hx-post={% url "single_product" product.slug %}
-        >Submit Review</button>
+        {% include "core/includes/star_rating_form.html" %}
+        <div class="d-grid">
+            <button
+            class="btn btn-outline-dark mt-3"
+            hx-post={% url "single_product" product.slug %}
+            >
+            <span class="btn-text">Submit Review</span>
+            {% include "base/includes/htmx_indicator.html" %}
+        </button>
+        </div>
     </form>
 {% else %}
     <p>

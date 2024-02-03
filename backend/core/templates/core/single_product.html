@@ -48,6 +48,7 @@
                             class="nav-link active"
                             id="description-tab"
                             data-bs-toggle="tab"
+                            data-hash="#description"
                             data-bs-target="#description"
                             type="button"
                             role="tab"
@@ -62,6 +63,7 @@
                             id="review-tab"
                             data-bs-toggle="tab"
                             data-bs-target="#reviews"
+                            data-hash="#reviews"
                             type="button"
                             role="tab"
                             aria-controls="profile"
@@ -96,9 +98,8 @@
                         {% comment %} Reviews Tab {% endcomment %}
                         <div>
                             <div class="row mb-6 text-center" id="review_form">
-                                {% include "core/includes/review_form.html" %}
+                                <div class="col-md-8 offset-md-2">{% include "core/includes/review_form.html" %}</div>
                             </div>
-                            {% comment %} TODO reviews {% endcomment %}
                             <div class="row g-2">
                                 {% include "core/includes/reviews_list.html" %}
                             </div>
@@ -110,4 +111,43 @@
     </article>
 </main>
 
+<script>
+    function handleHashChange(e) {
+        var targetTab =  window.location.hash;
+        var btns = document.querySelectorAll("#productTabs .nav-link");
+        var tabs = document.querySelectorAll(".tab-pane");
+        for (var i = 0; i < tabs.length; i++) {
+            var curBtn = btns[i];
+            var curTab = tabs[i];
+            console.log(curBtn)
+            console.log(curTab)
+            console.log(curBtn.dataset.hash === targetTab)
+            if (targetTab === "") {
+                curBtn.classList.add("active")
+                curTab.classList.add("show", "active")
+                return
+            }
+            else if (curBtn.dataset.hash === targetTab) {
+                curBtn.classList.add("active")
+                curTab.classList.add("show", "active")
+            }  else {
+                curBtn.classList.remove("active")
+                curTab.classList.remove("show", "active")
+            }
+        }
+    }
+
+    function changeHash (e) {
+        var target = e.target.closest(".nav-link");
+        window.location.hash = target.dataset.hash;
+    }
+
+
+
+
+    var productTabs = document.getElementById("productTabs");
+    productTabs.addEventListener("click", changeHash);
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+</script>
 {% endblock %}
