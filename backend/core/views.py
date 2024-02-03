@@ -35,9 +35,29 @@ class IndexView(View):
 
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
-    model = Product
-    paginate_by = 12
-    context_object_name = "product_list"
+    def get(self, request):
+        query = request.GET.get("query")
+        order_by = request.GET.get("order_by")
+        category = request.GET.get("category")
+        page = request.GET.get("page")
+
+        products = Product.objects.all()
+
+        if query:
+            products = products.filter(
+                Q(title__contains=query) | Q(description__contains=query)
+            )
+
+        if category:
+            pass
+
+        if order_by:
+            pass
+
+        if page:
+            pass
+
+        return render(request, "core/products_page.html", {"product_list": products})
 
 
 class ProductDetailView(View):
@@ -89,9 +109,7 @@ class SearchViewList(ListView):
 
     def get_queryset(self):
         query = self.request.GET["query"]
-        return Product.objects.all().filter(
-            Q(title__contains=query) | Q(description__contains=query)
-        )
+        return Product.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

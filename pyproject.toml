@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 django-ckeditor = "^6.7.0"
 django-htmx = "^1.17.2"
+faker = "^22.6.0"
 
 
 [build-system]
