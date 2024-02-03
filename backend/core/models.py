@@ -1,8 +1,12 @@
+import logging
+
 from accounts.models import User
 from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import Avg, Q, Sum
+
+logger = logging.getLogger("django")
 
 
 # Product
@@ -58,6 +62,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_average_rating(self):
+        avg_rating = self.reviews.aggregate(Avg("rating", default=0))["rating__avg"]
+        logger.info("Average rating is: ", avg_rating)
+        return avg_rating
 
     def get_top_selling():
         top_selling = Product.objects.annotate(

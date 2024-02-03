@@ -1,22 +1,6 @@
-<div class="d-flex align-items-center stars"></div>
-
-<style>
-.stars {
-    --percent: calc({{rating}} / 5 * 100%);
-    
-    display: inline-block;
-    font-size: 30px;
-    font-family: Times
-    line-height: 1;
-    
-    &::before {
-      content: '★★★★★';
-      letter-spacing: 3px;
-      background: linear-gradient(90deg, #ffc700 var(--percent), #ccc var(--percent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-fill-color: transparent;
-    }
-  }
-</style>
+<div class="d-flex align-items-center">
+    <div class="d-flex align-items-center stars" style="--percent: calc({{rating}} / 5 * 100%);"></div>
+    {% if count %}
+        <span>{{count}} reviews</span>
+    {% endif %}
+</div>

@@ -8,8 +8,8 @@
 <main>
     <article class="pt-8 pb-7">
         <div class="container">
-            <div class="row shadow rounded-5 overflow-hidden ps-0">
-                <div class="col-md-6 ps-0">
+            <div class="row shadow rounded-5 overflow-hidden">
+                <div class="col-md-6 px-0">
                     <div class="image-container">
                         <img
                             src="{{ product.image.url }}"
@@ -21,14 +21,15 @@
                     <div class="summary-container h-100 p-5">
                         <div class="vstack justify-content-between h-100">
                             <div>
-                                <h1 class="mb-1">{{ product.title|title }}</h1>
-                                {% include "core/includes/star_rating.html" with rating=4.5 %}
-                                <span class="fw-bold fs-1">$ {{ product.price }}</span>
+                                <div class="d-flex flex-column flex-md-row justify-content-between">
+                                    <h1 class="mb-1">{{ product.title|title }}</h1>
+                                    {% include "core/includes/star_rating.html" with rating=product.get_average_rating count=product.reviews.count%}
+                                </div>
+                                <span class="fw-bold fs-1 mt-4">$ {{ product.price }}</span>
                                 <p class="lead mt-5">{{ product.summary }}</p>
                             </div>
                             
                             <form action="{% url "add-to-cart" product.id%}" method="post">
-                                {% csrf_token %}
                                 {{quantity_form|crispy}}
                                 <div class="d-grid">
                                     <button class="btn btn-lg btn-outline-dark px-4">Add To Cart</button>
@@ -111,6 +112,27 @@
         </div>
     </article>
 </main>
+
+{% comment %} Styles for rating stars {% endcomment %}
+<style>
+.stars {
+    
+    display: inline-block;
+    font-size: 30px;
+    font-family: Times
+    line-height: 1;
+    
+    &::before {
+      content: '★★★★★';
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #ffc700 var(--percent), #ccc var(--percent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+    }
+  }
+</style>
 
 <script>
     function handleHashChange(e) {
