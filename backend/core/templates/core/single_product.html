@@ -22,6 +22,7 @@
                         <div class="vstack justify-content-between h-100">
                             <div>
                                 <h1 class="mb-1">{{ product.title|title }}</h1>
+                                {% include "core/includes/star_rating.html" with rating=4.5 %}
                                 <span class="fw-bold fs-1">$ {{ product.price }}</span>
                                 <p class="lead mt-5">{{ product.summary }}</p>
                             </div>
