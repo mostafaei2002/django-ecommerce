@@ -10,7 +10,28 @@ from .models import Cart, CartItem
 
 
 class CartView(View):
-    # TODO add in user authentication
+    def get(self, request):
+        user = request.user
+        try:
+            active_cart_id = request.session.get("active_cart_id")
+        except Exception:
+            active_cart_id = None
+
+        if user.is_authenticated:
+            try:
+                active_cart = user.carts.get(status="active")
+            except Exception:
+                return render(request, "shopping_cart/partials/cart.html", {})
+
+        elif active_cart_id:
+            active_cart = Cart.objects.get(pk=active_cart_id)
+        else:
+            return render(request, "shopping_cart/partials/cart.html", {})
+
+        return render(
+            request, "shopping_cart/partials/cart.html", {"cart": active_cart}
+        )
+
     def post(self, request):
         obj_id = request.POST.get("id")
         product_quantity = int(request.POST["quantity"])
@@ -55,10 +76,22 @@ class CartView(View):
         pass
 
     def delete(self, request):
-        cart_item = CartItem.objects.get(pk=id)
+        obj_id = request.GET.get("id")
+        cart_item = CartItem.objects.get(pk=obj_id)
         if request.user == cart_item.cart.created_by:
             cart_item.delete()
+            messages.success(request, "Cart item deleted successfully.")
         else:
-            return redirect(reverse("home"))
+            messages.error(request, "You are not authorized. Please Login.")
+            return HttpResponse(status=204)
 
-        return redirect(request.META["HTTP_REFERER"])
+        active_cart_id = request.session.get("active_cart_id", None)
+
+        if active_cart_id:
+            active_cart = Cart.objects.get(pk=active_cart_id)
+        else:
+            active_cart = request.user.carts.get(status="active")
+
+        return render(
+            request, "shopping_cart/partials/cart.html", {"cart": active_cart}
+        )

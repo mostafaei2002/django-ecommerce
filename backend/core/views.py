@@ -8,8 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
-from django_htmx.http import (HttpResponseClientRedirect,
-                              HttpResponseClientRefresh)
+from django_htmx.http import HttpResponseClientRedirect, HttpResponseClientRefresh
 
 from .forms import ProductQuantityForm, ReviewForm
 from .models import Category, Product
@@ -21,8 +20,8 @@ logger = logging.getLogger("django")
 class IndexView(View):
     def get(self, request):
         top_level_categories = Category.objects.filter(parent_category=None)
-        latest_products = Product.objects.all().order_by("-updated_at")[:8]
-        top_selling = Product.objects.all().order_items("sales")[:8]
+        latest_products = Product.objects.all().order_by("-updated_at")[:6]
+        top_selling = Product.objects.all().order_items("sales")[:6]
 
         return render(
             request,

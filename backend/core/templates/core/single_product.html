@@ -9,7 +9,7 @@
     <article class="pt-8 pb-7">
         <div class="container">
             <div class="row shadow-sm rounded-5 overflow-hidden">
-                <div class="col-md-6 px-0">
+                <div class="col-lg-6 px-0">
                     <div class="image-container">
                         <img
                             src="{{ product.image.url }}"
@@ -17,11 +17,11 @@
                             alt="{{ product.title }}"/>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <div class="summary-container h-100 p-5">
                         <div class="vstack justify-content-between h-100">
                             <div>
-                                <div class="d-flex flex-column flex-md-row justify-content-between">
+                                <div class="d-flex flex-column flex-md-row justify-content-between flex-wrap">
                                     <h1 class="mb-1">{{ product.title|title }}</h1>
                                     {% include "core/includes/star_rating.html" with rating=product.get_average_rating count=product.reviews.count%}
                                 </div>
@@ -81,12 +81,13 @@
                 </ul>
                 
                 <!-- Tab panes -->
-                <div class="tab-content mx-md-5">
+                <div class="tab-content">
                     {% if product.description %}
                     <div
                         class="tab-pane fade show active"
                         id="description"
                         role="tabpanel"
+                        class="mx-2"
                     >
                         {% comment %} Description Tab {% endcomment %}
                         {% if product.description %}
@@ -150,9 +151,9 @@
         for (var i = 0; i < tabs.length; i++) {
             var curBtn = btns[i];
             var curTab = tabs[i];
-            console.log(curBtn)
-            console.log(curTab)
-            console.log(curBtn.dataset.hash === targetTab)
+            //console.log(curBtn)
+            //console.log(curTab)
+            //console.log(curBtn.dataset.hash === targetTab)
             if (targetTab === "") {
                 curBtn.classList.add("active")
                 curTab.classList.add("show", "active")

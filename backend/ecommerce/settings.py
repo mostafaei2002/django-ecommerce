@@ -78,7 +78,6 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "core.context_processors.category_context",
-                "shopping_cart.context_processors.cart_context",
                 "accounts.context_processors.authentication_context",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
