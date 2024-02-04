@@ -6,6 +6,34 @@
 <main>
     <section class="pt-7 pb-4" style="min-height: 80vh;">
         <div class="container">
+            <div class="row">
+                <div class="col-12 mb-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    <form
+                        hx-get="{% url "products" %}?query={{query}}&order_by={{order_by}}"
+                        hx-trigger="change"
+                        hx-target="#products-container"
+                        hx-replace-url="true"
+                    >
+                        <fieldset
+                        >
+                            <span class="d-inline me-2">Categories</span>
+                            {% for c in top_level_categories %}
+                                <input 
+                                    type="radio" 
+                                    class="btn-check" 
+                                    name="category" 
+                                    value="{{c.slug}}" 
+                                    id="{{c.slug}}" 
+                                    autocomplete="off"
+                                    {% if c.slug == category_slug %}checked{% endif %} 
+                                >
+                                <label class="btn btn-sm btn-outline-dark" for="{{c.slug}}">{{c.name}}</label>
+                            {% endfor %}
+                        </fieldset>
+                    </form>
+   
+                </div>
+            </div>
             <div class="row g-2" id="products-container">
                 {% include "core/includes/product_list.html" %}
             </div>

@@ -6,11 +6,17 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Avg, Q, Sum
 
+from . import managers
+
 logger = logging.getLogger("django")
 
 
 # Product
 class Category(models.Model):
+    class Meta:
+        verbose_name = "category"
+        verbose_name_plural = "categories"
+
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="categories")
@@ -25,6 +31,8 @@ class Category(models.Model):
         null=True,
         blank=True,
     )
+
+    objects = managers.CategoryManager()
 
     def __str__(self):
         return self.name
@@ -41,9 +49,15 @@ class Category(models.Model):
 
         return products
 
-    class Meta:
-        verbose_name = "category"
-        verbose_name_plural = "categories"
+    def get_subcategories(self):
+        categories = [self]
+        subcategories = []
+        while categories:
+            current = categories.pop()
+            categories.extend(list(current.children.all()))
+            subcategories.extend(list(current.children.all()))
+
+        return subcategories
 
 
 class Product(models.Model):
@@ -68,6 +82,7 @@ class Product(models.Model):
         logger.info("Average rating is: ", avg_rating)
         return avg_rating
 
+    # TODO Delete Later
     def get_top_selling():
         top_selling = Product.objects.annotate(
             qty=Sum("order_item__quantity")

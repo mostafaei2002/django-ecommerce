@@ -16,7 +16,7 @@
 
 {% if next_page %}
     <span
-    hx-get="{% url "products" %}?page={{next_page}}&query={{query}}&category={{category}}&order_by={{order_by}}"
+    hx-get="{% url "products" %}?page={{next_page}}&query={{query}}&category={{category_slug}}&order_by={{order_by}}"
     hx-target="#products-container"
     hx-trigger="revealed"
     hx-swap="beforeend"

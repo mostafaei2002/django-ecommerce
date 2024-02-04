@@ -39,11 +39,14 @@ class ProductListView(ListView):
     def get(self, request):
         query = request.GET.get("query", "")
         order_by = request.GET.get("order_by", "")
-        category = request.GET.get("category", "")
+        category_slug = request.GET.get("category", "")
         page = int(request.GET.get("page", 1))
         next_page = page + 1
+
+        top_level_categories = Category.objects.get_top_level_categories()
+
         logger.info(
-            f"Query: {query} category: {category} ordered by {order_by} page {page} next_page {next_page}"
+            f"Query: {query} category: {category_slug} ordered by {order_by} page {page} next_page {next_page}"
         )
 
         products = Product.objects.all()
@@ -53,8 +56,10 @@ class ProductListView(ListView):
                 Q(title__contains=query) | Q(summary__contains=query)
             )
 
-        if category:
-            pass
+        if category_slug:
+            category_obj = Category.objects.get(slug=category_slug)
+            tareget_categories = [category_obj, *category_obj.get_subcategories()]
+            products = products.filter(categories__in=tareget_categories)
 
         if order_by:
             pass
@@ -80,7 +85,8 @@ class ProductListView(ListView):
                 "product_list": products,
                 "next_page": next_page,
                 "query": query,
-                "category": category,
+                "top_level_categories": top_level_categories,
+                "category_slug": category_slug,
                 "order_by": order_by,
             },
         )
