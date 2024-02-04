@@ -37,6 +37,7 @@ class IndexView(View):
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
     def get(self, request):
+        # Get queries
         query = request.GET.get("query", "")
         order_by = request.GET.get("order_by", "")
         category_slug = request.GET.get("category", "")
@@ -49,6 +50,7 @@ class ProductListView(ListView):
             f"Query: {query} category: {category_slug} ordered by {order_by} page {page} next_page {next_page}"
         )
 
+        # Handle Queries
         products = Product.objects.all()
 
         if query:
@@ -62,8 +64,9 @@ class ProductListView(ListView):
             products = products.filter(categories__in=tareget_categories)
 
         if order_by:
-            pass
+            products = products.order_items(order_by)
 
+        # Pagination
         product_paginator = Paginator(products, 12)
         if page > product_paginator.num_pages:
             return HttpResponse(status=204)
@@ -73,6 +76,7 @@ class ProductListView(ListView):
         else:
             products = product_paginator.page(page).object_list
 
+        # Choose Template
         if request.htmx and request.htmx.trigger != "search":
             template_name = "core/includes/product_list.html"
         else:

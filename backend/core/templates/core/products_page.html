@@ -7,7 +7,7 @@
     <section class="pt-7 pb-4" style="min-height: 80vh;">
         <div class="container">
             <div class="row">
-                <div class="col-12 mb-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                <div class="d-flex justify-content-between mb-3" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
                     <form
                         hx-get="{% url "products" %}?query={{query}}&order_by={{order_by}}"
                         hx-trigger="change"
@@ -30,6 +30,23 @@
                                 <label class="btn btn-sm btn-outline-dark" for="{{c.slug}}">{{c.name}}</label>
                             {% endfor %}
                         </fieldset>
+                    </form>
+                    
+                    
+                    <form
+                        hx-get="{% url "products" %}?query={{query}}&category={{category_slug}}"
+                        hx-trigger="change"
+                        hx-target="#products-container"
+                        hx-replace-url="true"
+                    >
+                        <select class="form-select form-select-sm" name="order_by">
+                            <option value="" {% if order_by == "" %}selected{% endif %}>Order By</option>
+                            <option value="created_at" {% if order_by == "created_at" %}selected{% endif %}>Date - Newest</option>
+                            <option value="sales"{% if order_by == "sales" %}selected{% endif %} >Sales</option>
+                            <option value="num_ratings"{% if order_by == "num_ratings" %}selected{% endif %} >Number of Ratings</option>
+                            <option value="rating"{% if order_by == "rating" %}selected{% endif %} >Rating</option>
+                            <option value="price" {% if order_by == "price" %}selected{% endif %}>Price</option>
+                        </select>
                     </form>
    
                 </div>

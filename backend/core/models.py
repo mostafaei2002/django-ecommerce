@@ -61,6 +61,9 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    class Meta:
+        ordering = ["title"]
+
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
     image = models.ImageField(upload_to="products", default="products/default.png")
@@ -74,12 +77,13 @@ class Product(models.Model):
         Category, on_delete=models.CASCADE, related_name="products"
     )
 
+    objects = managers.ProductQuerySet.as_manager()
+
     def __str__(self):
         return self.title
 
     def get_average_rating(self):
         avg_rating = self.reviews.aggregate(Avg("rating", default=0))["rating__avg"]
-        logger.info("Average rating is: ", avg_rating)
         return avg_rating
 
     # TODO Delete Later
