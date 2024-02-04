@@ -10,6 +10,9 @@
 .htmx-request .btn-text {
     display: none !important;
 }
+.htmx-request .htmx-content {
+    display: none !important;
+}
 
 .message-animation {
     animation-name: messageAnimation;
