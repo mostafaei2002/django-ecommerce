@@ -86,13 +86,6 @@ class Product(models.Model):
         avg_rating = self.reviews.aggregate(Avg("rating", default=0))["rating__avg"]
         return avg_rating
 
-    # TODO Delete Later
-    def get_top_selling():
-        top_selling = Product.objects.annotate(
-            qty=Sum("order_item__quantity")
-        ).order_by("-qty")
-        return top_selling
-
 
 class Review(models.Model):
     rating = models.PositiveIntegerField(

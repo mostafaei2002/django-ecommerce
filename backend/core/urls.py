@@ -10,5 +10,4 @@ urlpatterns = [
         views.ProductDetailView.as_view(),
         name="single_product",
     ),
-    path("search/", views.SearchViewList.as_view(), name="search"),
 ]

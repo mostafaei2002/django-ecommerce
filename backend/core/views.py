@@ -8,7 +8,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
-from django_htmx.http import HttpResponseClientRedirect, HttpResponseClientRefresh
+from django_htmx.http import (HttpResponseClientRedirect,
+                              HttpResponseClientRefresh)
 
 from .forms import ProductQuantityForm, ReviewForm
 from .models import Category, Product
@@ -21,7 +22,7 @@ class IndexView(View):
     def get(self, request):
         top_level_categories = Category.objects.filter(parent_category=None)
         latest_products = Product.objects.all().order_by("-updated_at")[:8]
-        top_selling = Product.get_top_selling()
+        top_selling = Product.objects.all().order_items("sales")[:8]
 
         return render(
             request,
@@ -136,18 +137,3 @@ class ProductDetailView(View):
         messages.error(request, "Please enter a comment")
 
         return HttpResponse(status=204)
-
-
-class SearchViewList(ListView):
-    template_name = "search/search_list.html"
-    paginate_by = 10
-    context_object_name = "product_list"
-
-    def get_queryset(self):
-        query = self.request.GET["query"]
-        return Product.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["query"] = self.request.GET["query"]
-        return context
