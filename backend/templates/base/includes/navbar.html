@@ -6,21 +6,7 @@
 
 
         {% comment %} Search Bar {% endcomment %}
-        <form class="d-flex my-2 my-lg-0 mx-5 input-group d-none d-md-flex" action="{% url "search" %}" method="get">
-            {% csrf_token %}
-            <input
-                class="form-control"
-                type="search"
-                name="query"
-                placeholder="Search"
-            />
-            <button
-                class="btn btn-outline-success my-2 my-sm-0"
-                type="submit"
-            >
-                Search
-            </button>
-        </form>
+        {% include "base/includes/search_bar.html" with mobile=False%}
             
         {% comment %} Other navbar Items Go here {% endcomment %}
         <ul class="navbar-nav mt-2 mt-lg-0 gap-3 flex-row">
@@ -55,19 +41,7 @@
 
     {% comment %} Search Bar {% endcomment %}
     <div class="container mt-3 d-md-none">
-        <form class="d-flex input-group w-100">
-            <input
-                class="form-control"
-                type="text"
-                placeholder="Search"
-            />
-            <button
-                class="btn btn-outline-success my-2 my-sm-0"
-                type="submit"
-            >
-                Search
-            </button>
-        </form>
+        {% include "base/includes/search_bar.html" with mobile=True %}
     </div>
 </nav>
 {% if not user.is_authenticated %}

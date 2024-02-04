@@ -37,16 +37,20 @@ class IndexView(View):
 class ProductListView(ListView):
     # Pass in products ordered by top selling by default
     def get(self, request):
-        query = request.GET.get("query")
-        order_by = request.GET.get("order_by")
-        category = request.GET.get("category")
-        page = request.GET.get("page") or 1
+        query = request.GET.get("query", "")
+        order_by = request.GET.get("order_by", "")
+        category = request.GET.get("category", "")
+        page = int(request.GET.get("page", 1))
+        next_page = page + 1
+        logger.info(
+            f"Query: {query} category: {category} ordered by {order_by} page {page} next_page {next_page}"
+        )
 
         products = Product.objects.all()
 
         if query:
             products = products.filter(
-                Q(title__contains=query) | Q(description__contains=query)
+                Q(title__contains=query) | Q(summary__contains=query)
             )
 
         if category:
@@ -56,14 +60,30 @@ class ProductListView(ListView):
             pass
 
         product_paginator = Paginator(products, 12)
-        products = product_paginator.page(page).object_list
+        if page > product_paginator.num_pages:
+            return HttpResponse(status=204)
+        elif page == product_paginator.num_pages:
+            next_page = None
+            products = product_paginator.page(page).object_list
+        else:
+            products = product_paginator.page(page).object_list
 
-        if request.htmx:
+        if request.htmx and request.htmx.trigger != "search":
             template_name = "core/includes/product_list.html"
         else:
             template_name = "core/products_page.html"
 
-        return render(request, template_name, {"product_list": products})
+        return render(
+            request,
+            template_name,
+            {
+                "product_list": products,
+                "next_page": next_page,
+                "query": query,
+                "category": category,
+                "order_by": order_by,
+            },
+        )
 
 
 class ProductDetailView(View):
