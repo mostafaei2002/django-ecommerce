@@ -1,0 +1,45 @@
+{% load crispy_forms_tags %}
+<div class="modal-header position-relative">
+    <h5 class="modal-title" id="">
+        Sign Up
+    </h5>
+    <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+    ></button>
+</div>
+<form>
+    {% csrf_token %}
+    <div class="modal-body">
+        {{ register_form|crispy }}
+        <div>
+            <a class="text-muted text-decoration-none" href="#">I have forgotten my password.</a>
+        </div>
+    </div>
+    <div class="modal-footer">
+            <div class="d-flex w-100 gap-2">
+                <button 
+                type="submit" 
+                class="btn btn-outline-dark w-100"
+                hx-post={% url "register" %}
+                hx-trigger="click"
+                hx-target=".modal-content"
+                hx-swap="innerHTML"
+                >
+                <span class="btn-text">Sign up</span>
+                {% include "base/includes/htmx_indicator.html" %}
+            </button>
+                <a type="submit" class="btn btn-outline-primary w-50"
+                    hx-get={% url "login" %}
+                    hx-trigger="click"
+                    hx-target=".modal-content"
+                    hx-swap="innerHTML"
+                >
+                <div class="btn-text">Sign in</div>
+                {% include "base/includes/htmx_indicator.html" %}
+            </a>
+            </div>
+    </div>
+</form>

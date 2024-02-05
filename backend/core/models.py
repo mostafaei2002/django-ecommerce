@@ -1,12 +1,22 @@
+import logging
+
 from accounts.models import User
 from ckeditor.fields import RichTextField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, Sum
+from django.db.models import Avg, Q, Sum
+
+from . import managers
+
+logger = logging.getLogger("django")
 
 
 # Product
 class Category(models.Model):
+    class Meta:
+        verbose_name = "category"
+        verbose_name_plural = "categories"
+
     slug = models.SlugField(unique=True)
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="categories")
@@ -21,6 +31,8 @@ class Category(models.Model):
         null=True,
         blank=True,
     )
+
+    objects = managers.CategoryManager()
 
     def __str__(self):
         return self.name
@@ -37,15 +49,24 @@ class Category(models.Model):
 
         return products
 
-    class Meta:
-        verbose_name = "category"
-        verbose_name_plural = "categories"
+    def get_subcategories(self):
+        categories = [self]
+        subcategories = []
+        while categories:
+            current = categories.pop()
+            categories.extend(list(current.children.all()))
+            subcategories.extend(list(current.children.all()))
+
+        return subcategories
 
 
 class Product(models.Model):
+    class Meta:
+        ordering = ["title"]
+
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    image = models.ImageField(upload_to="products")
+    image = models.ImageField(upload_to="products", default="products/default.png")
     summary = models.TextField(max_length=500, blank=True, null=True)
     description = RichTextField(max_length=20000, blank=True, null=True)
     price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -56,14 +77,14 @@ class Product(models.Model):
         Category, on_delete=models.CASCADE, related_name="products"
     )
 
+    objects = managers.ProductQuerySet.as_manager()
+
     def __str__(self):
         return self.title
 
-    def get_top_selling():
-        top_selling = Product.objects.annotate(
-            qty=Sum("order_item__quantity")
-        ).order_by("-qty")
-        return top_selling
+    def get_average_rating(self):
+        avg_rating = self.reviews.aggregate(Avg("rating", default=0))["rating__avg"]
+        return avg_rating
 
 
 class Review(models.Model):

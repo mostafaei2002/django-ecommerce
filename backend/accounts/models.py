@@ -9,9 +9,10 @@ from django.db import models
 class User(AbstractUser):
     phone = models.CharField(
         validators=[
-            RegexValidator("[0-9]+"),
+            RegexValidator("[0-9]+$"),
         ],
         unique=True,
+        max_length=20,
     )
     avatar = models.ImageField(upload_to="avatars", blank=True)
 
@@ -27,7 +28,9 @@ class User(AbstractUser):
 class Address(models.Model):
     province = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    postal_code = models.CharField(validators=[RegexValidator("[0-9]{5}-[0-9]{5}")])
+    postal_code = models.CharField(
+        validators=[RegexValidator("^\\d{5}-\\d{5}$")], max_length=20
+    )
     address = models.TextField(
         max_length=500, help_text="Enter more description about your address"
     )

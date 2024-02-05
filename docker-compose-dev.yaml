@@ -6,31 +6,31 @@ services:
         ports:
             - 8000:8000
         volumes:
-            - .:/app
+            - ./backend:/app
         environment:
             SECRET_KEY: "django-insecure-kt+aij#w28!@hz(0@(x4ef$2_4d!1mr++kntqennmk!d0w^uyt"
-            DATABASE_NAME: "shop"
-            DATABASE_USERNAME: "admin"
-            DATABASE_PASSWORD: "admin"
-            DATABASE_HOST: "db"
-            DATABASE_PORT: "5432"
+            # DATABASE_NAME: "shop"
+            # DATABASE_USERNAME: "admin"
+            # DATABASE_PASSWORD: "admin"
+            # DATABASE_HOST: "db"
+            # DATABASE_PORT: "5432"
             IS_DEVELOPMENT: True
-    db:
-        image: postgres
-        restart: always
-        ports:
-            - 8081:5432
-        volumes:
-            - my-db:/var/lib/postgresql/data
-        environment:
-            POSTGRES_USER: admin
-            POSTGRES_PASSWORD: admin
+    # db:
+    #     image: postgres
+    #     restart: always
+    #     ports:
+    #         - 8081:5432
+    #     volumes:
+    #         - my-db:/var/lib/postgresql/data
+    #     environment:
+    #         POSTGRES_USER: admin
+    #         POSTGRES_PASSWORD: admin
 
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
+    # adminer:
+    #     image: adminer
+    #     restart: always
+    #     ports:
+    #         - 8080:8080
 volumes:
     my-db:
         driver: local

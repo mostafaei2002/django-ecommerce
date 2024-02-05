@@ -1,0 +1,185 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block body %}
+<main>
+    <article class="pt-8 pb-7">
+        <div class="container">
+            <div class="row shadow-sm rounded-5 overflow-hidden">
+                <div class="col-lg-6 px-0">
+                    <div class="image-container">
+                        <img
+                            src="{{ product.image.url }}"
+                            class="img-fluid"
+                            alt="{{ product.title }}"/>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="summary-container h-100 p-5">
+                        <div class="vstack justify-content-between h-100">
+                            <div>
+                                <div class="d-flex flex-column flex-md-row justify-content-between flex-wrap">
+                                    <h1 class="mb-1">{{ product.title|title }}</h1>
+                                    {% include "core/includes/star_rating.html" with rating=product.get_average_rating count=product.reviews.count%}
+                                </div>
+                                <span class="fw-bold fs-1 mt-4">$ {{ product.price }}</span>
+                                <p class="lead mt-5">{{ product.summary }}</p>
+                            </div>
+                            
+                            <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                                <input type="hidden" name="id" value={{product.id}}>
+                                {{quantity_form|crispy}}
+                                <div class="d-grid">
+                                    <button 
+                                        class="btn btn-lg btn-outline-dark px-4"
+                                        hx-post={% url "cart" %}
+                                    >Add To Cart</button>
+                                </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row pb-5 pt-3 px-2 rounded-3 shadow-sm mt-5">
+                {% comment %} Tabs {% endcomment %}
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs mb-5" id="productTabs" role="tablist">
+                    {% if product.description %}
+                    <li class="nav-item" role="presentation">
+                        <button
+                            class="nav-link active"
+                            id="description-tab"
+                            data-bs-toggle="tab"
+                            data-hash="#description"
+                            data-bs-target="#description"
+                            type="button"
+                            role="tab"
+                        >
+                            Description
+                        </button>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item" role="presentation">
+                        <button
+                            class="nav-link {% if not product.description %}active{% endif %}"
+                            id="review-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#reviews"
+                            data-hash="#reviews"
+                            type="button"
+                            role="tab"
+                            aria-controls="profile"
+                            aria-selected="false"
+                        >
+                            Reviews
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    {% if product.description %}
+                    <div
+                        class="tab-pane fade show active"
+                        id="description"
+                        role="tabpanel"
+                        class="mx-2"
+                    >
+                        {% comment %} Description Tab {% endcomment %}
+                        {% if product.description %}
+                            <h2>More About {{ product.title }}</h2>
+                            {{ product.description|linebreaks }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% comment %} Reviews Pane {% endcomment %}
+                    <div
+                        class="tab-pane fade {% if not product.description %}show active{% endif %}"
+                        id="reviews"
+                        role="tabpanel"
+                    >
+                        {% comment %} Reviews Tab {% endcomment %}
+                        <div>
+                            <div class="row mb-6 text-center" id="review_form">
+                                <div class="col-12 col-md-8 offset-md-2">
+                                    {% include "core/includes/review_form.html" %}
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    {% include "core/includes/reviews_list.html" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</main>
+
+{% comment %} Styles for rating stars {% endcomment %}
+<style>
+.stars {
+    
+    display: inline-block;
+    font-size: 30px;
+    font-family: Times
+    line-height: 1;
+    
+    &::before {
+      content: '★★★★★';
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #ffc700 var(--percent), #ccc var(--percent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+    }
+  }
+</style>
+
+<script>
+    function handleHashChange(e) {
+        var targetTab =  window.location.hash;
+        var btns = document.querySelectorAll("#productTabs .nav-link");
+        var tabs = document.querySelectorAll(".tab-pane");
+        for (var i = 0; i < tabs.length; i++) {
+            var curBtn = btns[i];
+            var curTab = tabs[i];
+            //console.log(curBtn)
+            //console.log(curTab)
+            //console.log(curBtn.dataset.hash === targetTab)
+            if (targetTab === "") {
+                curBtn.classList.add("active")
+                curTab.classList.add("show", "active")
+                return
+            }
+            else if (curBtn.dataset.hash === targetTab) {
+                curBtn.classList.add("active")
+                curTab.classList.add("show", "active")
+            }  else {
+                curBtn.classList.remove("active")
+                curTab.classList.remove("show", "active")
+            }
+        }
+    }
+
+    function changeHash (e) {
+        var target = e.target.closest(".nav-link");
+        window.location.hash = target.dataset.hash;
+    }
+
+
+
+
+    var productTabs = document.getElementById("productTabs");
+    productTabs.addEventListener("click", changeHash);
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+</script>
+{% endblock %}

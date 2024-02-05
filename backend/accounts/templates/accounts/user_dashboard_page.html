@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% block title %}Welcome {{user.first_name|title}}{% endblock %}
+
+{% block body %}
+<section class="py-7" style="min-height: 85vh;">
+    <div class="container">
+        <h2 class="text-center">Welcome back {{request.user.username}}</h2>
+        <div class="d-flex flex-column flex-md-row align-items-start">
+            <div class="nav flex-row flex-md-column mb-4 mb-md-0 nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <button data-hash="#profile" class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</button>
+              <button data-hash="#orders" class="nav-link" id="v-pills-order-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">Orders</button>
+              <button data-hash="#addresses" class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address" aria-selected="false">Address</button>
+            </div>
+
+            {% comment %} Tab Content {% endcomment %}
+            <div class="tab-content w-100" id="v-pills-tabContent">
+
+                {% comment %} Profile Tab {% endcomment %}
+            <div data-hash="#profile" class="tab-pane fade show active mx-auto" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
+                <div class="col-md-6 offset-md-3" >
+                  {% include "accounts/includes/edit_profile.html" %}
+                </div>
+            </div>
+              
+              {% comment %} Orders Tab {% endcomment %}
+              <div data-hash="#orders" class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
+                  {% include "accounts/includes/orders_list.html" %}
+              </div>
+
+              {% comment %} Orders Tab {% endcomment %}
+              <div data-hash="#addresses" class="tab-pane fade" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-address-tab" tabindex="0">
+                    <div class="col-md-8 offset-md-2" id="address-container">
+                      {% include "accounts/includes/address_list.html" %}
+                    </div>
+              </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function handleHashChange(e) {
+        var targetTab =  window.location.hash;
+        var btns = document.querySelectorAll("#v-pills-tab .nav-link");
+        var tabs = document.querySelectorAll("#v-pills-tabContent .tab-pane");
+        var profileBtn = document.getElementById("v-pills-profile-tab");
+        var profileTab = document.getElementById("v-pills-profile");
+        for (var i = 0; i < tabs.length; i++) {
+            var curBtn = btns[i];
+            var curTab = tabs[i];
+            if (curBtn.dataset.hash === targetTab) {
+                curBtn.classList.add("active")
+                curTab.classList.add("show", "active")
+            } else if (targetTab === ""){
+                profileBtn.classList.add("active")
+                profileTab.classList.add("show", "active")
+                window.location.hash = "#profile";
+            } else {
+                curBtn.classList.remove("active")
+                curTab.classList.remove("show", "active")
+            }
+        }
+    }
+
+    function changeHash (e) {
+        var target = e.target.closest(".nav-link");
+        window.location.hash = target.dataset.hash;
+    }
+
+
+
+
+    var pillsTab = document.getElementById("v-pills-tab");
+    pillsTab.addEventListener("click", changeHash);
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+</script>
+
+{% endblock %}
