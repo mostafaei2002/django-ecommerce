@@ -3,49 +3,87 @@
 {% block title %}Order {{order.id}}{% endblock %}
 
 {% block body %}
-<main class="pt-7 pb-6">
-    <div class="container" style="min-height: 70vh;">
+<main class="pt-7 pb-6" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <div class="container" >
             
-    <h2>
-    Ordered {{order.items.count}}
-    {% if order.items.count == 1 %}item{% else %}items{% endif %}
-    on {{order.created_at}}
-    </h2>
+    <div class="d-flex flex-column" style="min-height: 70vh;">
+        <div id="order-details">
+            <h2>
+            Ordered {{order.items.count}}
+            {% if order.items.count == 1 %}item{% else %}items{% endif %}
+            on {{order.created_at}}
+            </h2>
+        
+              <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for item in order.items.all %}
+                      <tr>
+                          <th class="align-middle" scope="row">{{forloop.counter}}</th>
+                          <td class="align-middle">{{item.product.title}} ({{item.quantity}})</td>
+                          <td class="align-middle">{{item.price}}</td>
+                          <td>
+                            <a
+                              class="btn"
+                              href={% url "single-product" item.product.slug %}
+                            >
+                              <span class="btn-text text-dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24px" height="24px">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                              </span>
+                              {% include "base/includes/htmx_mini_indicator.html" %}
+                            </a>
+                          </td>
+        
+                      </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+            </div>
+        
+            {% if order.status == "pending" %}
+            <div id="address-container" class="mt-5">
+                <h5>Address</h5>
+                <form class="d-flex flex-column h-100">
+                    {% for address in address_list %}
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="radio"
+                            name="address"
+                            value="{{address.id}}"
+                            id="{{address.id}}"
+                            {% if forloop.first %}checked{% endif %}>
+                        <label class="form-check-label" for="{{address.id}}">
+                            {{address.province}}-{{address.city}} ({{address.postal_code}})
+                        </label>
+                      </div>
+                    {% empty %}
+                        <p class="text-center">No addresses available.<a href="{% url "dashboard" %}#addresses"> Please click here to add an address.</a></p>
+                    {% endfor %}
 
-  <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Item</th>
-          <th scope="col">Price</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-          {% for item in order.items.all %}
-              <tr>
-                  <th class="align-middle" scope="row">{{forloop.counter}}</th>
-                  <td class="align-middle">{{item.product.title}} ({{item.quantity}})</td>
-                  <td class="align-middle">{{item.price}}</td>
-                  <td>
-                    <a
-                      class="btn"
-                      href={% url "single-product" item.product.slug %}
-                    >
-                      <span class="btn-text text-dark">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24px" height="24px">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
-                      </span>
-                      {% include "base/includes/htmx_mini_indicator.html" %}
-                    </a>
-                  </td>
-                  
-              </tr>
-          {% endfor %}
-      </tbody>
-    </table>
+                    <div class="d-flex mt-auto">
+                        <button class="btn btn-outline-dark ms-auto"
+                            hx-post={% url "payment" order.id %}
+                        >Submit Order</button>
+                    </div>
+                </form>
+
+            </div>
+            {% else %}
+                <p class="text-center">Order is submitted. It will be shipped to {{order.address.province}}-{{order.address.city}} ({{order.address.postal_code}})</p>
+            {% endif %}
+
+    </div>
     </div>
 </main>
 {% endblock %}
