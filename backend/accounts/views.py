@@ -15,7 +15,7 @@ from django_htmx.http import (
     HttpResponseClientRefresh,
     trigger_client_event,
 )
-from shopping_cart.models import Cart
+from shopping_cart.models import Cart, CartItem
 
 from . import forms
 from .models import Address, User
@@ -29,19 +29,14 @@ def merge_carts(request, user):
     # Old Cart && no new cart
     # Old cart && new cart
     # no old cart && new cart
-    old_cart_id = request.session.get("active_cart_id")
+    old_cart_id = request.session.get("active_cart_id", None)
 
     # Get old cart
-    if old_cart_id:
-        old_cart = Cart.objects.get(pk=old_cart_id)
-    else:
-        old_cart = None
+    old_cart = Cart.objects.get(pk=old_cart_id)
 
     # Get active cart
-    try:
-        active_cart = user.carts.get(status="active")
-    except Exception:
-        active_cart = None
+    active_cart = user.carts.get(status="active")
+    logger.info(old_cart, active_cart)
 
     # Handle carts
     if old_cart and not active_cart:
@@ -148,19 +143,20 @@ class UserLoginView(View):
 
     def post(self, request):
         if request.user.is_authenticated:
-            return redirect(reverse("home"))
+            return HttpResponseClientRedirect(redirect_to=reverse("home"))
 
         # Login & Merge old cart with new Cart
         login_form = AuthenticationForm()
         username = request.POST.get("username")
-
         password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
 
-        merge_carts(request, user)
+        old_cart = Cart.objects.get_active_cart(request)
+
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+            Cart.objects.merge_carts(request, old_cart)
 
             messages.success(request, "You are Logged in.")
             return HttpResponseClientRedirect(redirect_to=reverse("home"))

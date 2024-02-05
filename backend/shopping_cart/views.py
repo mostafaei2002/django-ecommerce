@@ -12,85 +12,40 @@ from .models import Cart, CartItem
 class CartView(View):
     def get(self, request):
         user = request.user
-        try:
-            active_cart_id = request.session.get("active_cart_id")
-        except Exception:
-            active_cart_id = None
-
-        if user.is_authenticated:
-            try:
-                active_cart = user.carts.get(status="active")
-            except Exception:
-                return render(request, "shopping_cart/partials/cart.html", {})
-
-        elif active_cart_id:
-            active_cart = Cart.objects.get(pk=active_cart_id)
-        else:
-            return render(request, "shopping_cart/partials/cart.html", {})
+        active_cart = Cart.objects.get_active_cart(request)
 
         return render(
             request, "shopping_cart/partials/cart.html", {"cart": active_cart}
         )
 
     def post(self, request):
-        obj_id = request.POST.get("id")
-        product_quantity = int(request.POST["quantity"])
+        obj_id = request.POST.get("id", None)
+        product_quantity = request.POST.get("quantity", 1)
         product = Product.objects.get(pk=obj_id)
-        user = request.user
 
-        # Get the active cart for authenticated and non-authenticated users
-        if user.is_authenticated:
-            try:
-                active_cart = user.carts.get(status="active")
-            except Exception:
-                active_cart = Cart(created_by=user, status="active")
-                active_cart.save()
+        if obj_id and product_quantity:
+            active_cart = Cart.objects.get_or_create_active_cart(request)
+            active_cart.add_item(product, int(product_quantity))
 
+            messages.success(request, "Product added to cart successfully.")
+            return HttpResponse(status=204)
         else:
-            active_cart_id = request.session.get("active_cart_id")
-            if active_cart_id:
-                active_cart = Cart.objects.get(pk=active_cart_id)
-            else:
-                active_cart = Cart(status="active")
-                active_cart.save()
-                request.session["active_cart_id"] = active_cart.id
-
-        # Add quantity if cart item already is in cart
-        try:
-            cart_item = active_cart.items.get(product=product)
-            cart_item.quantity += product_quantity
-
-        except Exception:
-            cart_item = CartItem(
-                product=product,
-                quantity=product_quantity,
-                cart=active_cart,
-            )
-
-        cart_item.save()
-        messages.success(request, "Product added to cart successfully.")
-
-        return HttpResponse(status=204)
+            messages.error(request, "Failed to add product to cart.")
+            return HttpResponse(status=400)
 
     def put(self, request):
         pass
 
     def delete(self, request):
-        obj_id = request.GET.get("id")
+        obj_id = request.GET.get("id", 0)
         cart_item = CartItem.objects.get(pk=obj_id)
-        if request.user == cart_item.cart.created_by:
-            cart_item.delete()
+        active_cart = Cart.objects.get_active_cart(request)
+        try:
+            active_cart.delete_item(obj_id)
             messages.success(request, "Cart item deleted successfully.")
-        else:
-            messages.error(request, "You are not authorized. Please Login.")
-            return HttpResponse(status=204)
-
-        active_cart_id = request.session.get("active_cart_id", None)
-
-        if active_cart_id:
-            active_cart = Cart.objects.get(pk=active_cart_id)
-        else:
-            active_cart = request.user.carts.get(status="active")
+        except Exception:
+            messages.error(request, "Item Doesn't exist")
+            return HttpResponse(status=400)
 
         return render(
             request, "shopping_cart/partials/cart.html", {"cart": active_cart}
