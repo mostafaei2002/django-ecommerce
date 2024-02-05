@@ -10,7 +10,7 @@ from django.db import models
 class Order(models.Model):
     ORDER_STATUS = [("pending", "pending"), ("finished", "finished")]
 
-    status = models.CharField(choices=ORDER_STATUS, default="pending")
+    status = models.CharField(choices=ORDER_STATUS, default="pending", max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")

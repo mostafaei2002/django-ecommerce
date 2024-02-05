@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+
+{% block title %}Products{% endblock %}
+
+{% block body %}
+<main>
+    <section class="pt-7 pb-4" style="min-height: 80vh;">
+        <div class="container">
+            <div class="row">
+                <div class="d-flex justify-content-between mb-3" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    <form
+                        hx-get="{% url "products" %}?query={{query}}&order_by={{order_by}}"
+                        hx-trigger="change"
+                        hx-target="#products-container"
+                        hx-indicator="#products-indicator"
+                        hx-replace-url="true"
+                    >
+                        <fieldset
+                        >
+                            <span class="d-inline me-2">Categories</span>
+                            {% for c in top_level_categories %}
+                                <input 
+                                    type="radio" 
+                                    class="btn-check" 
+                                    name="category" 
+                                    value="{{c.slug}}" 
+                                    id="{{c.slug}}" 
+                                    autocomplete="off"
+                                    {% if c.slug == category_slug %}checked{% endif %} 
+                                >
+                                <label class="btn btn-sm btn-outline-dark" for="{{c.slug}}">
+                                    <span class="btn-text">{{c.name}}</span>
+                                </label>
+                            {% endfor %}
+                        </fieldset>
+                    </form>
+                    
+                    
+                    <form
+                        class="d-flex"
+                        hx-get="{% url "products" %}?query={{query}}&category={{category_slug}}"
+                        hx-trigger="change"
+                        hx-target="#products-container"
+                        hx-indicator="#products-indicator"
+                        hx-replace-url="true"
+                    >
+                        <select class="form-select form-select-sm" name="order_by">
+                            <option value="" {% if order_by == "" %}selected{% endif %}>Order By</option>
+                            <option value="created_at" {% if order_by == "created_at" %}selected{% endif %}>Date - Newest</option>
+                            <option value="sales"{% if order_by == "sales" %}selected{% endif %} >Sales</option>
+                            <option value="num_ratings"{% if order_by == "num_ratings" %}selected{% endif %} >Number of Ratings</option>
+                            <option value="rating"{% if order_by == "rating" %}selected{% endif %} >Rating</option>
+                            <option value="price" {% if order_by == "price" %}selected{% endif %}>Price</option>
+                        </select>
+                    </form>
+   
+                </div>
+            </div>
+            <div id="products-indicator">
+                {% include "base/includes/htmx_indicator.html" %}
+                <div class="row g-2 htmx-content" id="products-container">
+                    {% include "core/includes/product_list.html" %}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

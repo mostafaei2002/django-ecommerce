@@ -1,16 +1,27 @@
+import logging
+from io import BytesIO
+
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files import File
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from shopping_cart.models import Cart
+from django_htmx.http import (
+    HttpResponseClientRedirect,
+    HttpResponseClientRefresh,
+    trigger_client_event,
+)
+from shopping_cart.models import Cart, CartItem
 
-from .forms import AddressForm, UserAvatarForm, UserEditForm, UserRegisterForm
+from . import forms
 from .models import Address, User
 
 # Create your views here.
+logger = logging.getLogger("django")
 
 
 def merge_carts(request, user):
@@ -18,19 +29,14 @@ def merge_carts(request, user):
     # Old Cart && no new cart
     # Old cart && new cart
     # no old cart && new cart
-    old_cart_id = request.session.get("active_cart_id")
+    old_cart_id = request.session.get("active_cart_id", None)
 
     # Get old cart
-    if old_cart_id:
-        old_cart = Cart.objects.get(pk=old_cart_id)
-    else:
-        old_cart = None
+    old_cart = Cart.objects.get(pk=old_cart_id)
 
     # Get active cart
-    try:
-        active_cart = user.carts.get(status="active")
-    except Exception:
-        active_cart = None
+    active_cart = user.carts.get(status="active")
+    logger.info(old_cart, active_cart)
 
     # Handle carts
     if old_cart and not active_cart:
@@ -55,42 +61,40 @@ def merge_carts(request, user):
 
 
 class ProfileView(LoginRequiredMixin, View):
-    def get(self, request):
-        user_form = UserEditForm(instance=request.user)
+    def put(self, request):
+        data = BytesIO(request.body)
+        self.PUT, self.FILES = request.parse_file_upload(request.META, data)
+        user_form = forms.UserEditForm(self.PUT, self.FILES, instance=request.user)
 
-        address_list = request.user.addresses.all()
-        orders = request.user.orders.all()
-
-        return render(
-            request,
-            "accounts/user_profile.html",
-            {
-                "form": user_form,
-                "address_list": address_list,
-                "orders": orders,
-            },
-        )
-
-
-class ProfileEditView(LoginRequiredMixin, View):
-    def post(self, request):
-        user_form = UserEditForm(request.POST, request.FILES, instance=request.user)
+        if not user_form.changed_data:
+            messages.error(request, "Please change your data then submit.")
+            return HttpResponse(status=204)
 
         if user_form.is_valid():
             user_form.save()
 
-            messages.success(request, "Your profile was updated successfully.")
-            return redirect(reverse("profile"))
+            messages.success(request, "Profile updated successfully.")
+
+            return HttpResponseClientRefresh()
+
+        messages.error(request, "Invalid inputs.")
+        return render(
+            request, "accounts/includes/edit_profile.html", {"profile_form": user_form}
+        )
+
+
+class DashboardView(LoginRequiredMixin, View):
+    def get(self, request):
+        user_form = forms.UserEditForm(instance=request.user)
 
         address_list = request.user.addresses.all()
         orders = request.user.orders.all()
 
-        messages.error(request, "Invalid inputs.")
         return render(
             request,
-            "accounts/user_profile.html",
+            "accounts/user_dashboard_page.html",
             {
-                "form": user_form,
+                "profile_form": user_form,
                 "address_list": address_list,
                 "orders": orders,
             },
@@ -99,18 +103,16 @@ class ProfileEditView(LoginRequiredMixin, View):
 
 class UserRegisterView(View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return redirect(reverse("home"))
-
-        register_form = UserRegisterForm()
-
-        return render(request, "accounts/register.html", {"form": register_form})
+        register_form = forms.UserRegisterForm()
+        return render(
+            request, "accounts/register_form.html", {"register_form": register_form}
+        )
 
     def post(self, request):
         if request.user.is_authenticated:
             return redirect(reverse("home"))
 
-        register_form = UserRegisterForm(request.POST)
+        register_form = forms.UserRegisterForm(request.POST)
 
         if register_form.is_valid():
             form_data = register_form.clean()
@@ -118,65 +120,94 @@ class UserRegisterView(View):
             password = form_data["password"]
 
             new_user = User.objects.create_user(
-                first_name=form_data["first_name"],
-                last_name=form_data["last_name"],
                 username=username,
-                email=form_data["email"],
                 phone=form_data["phone"],
                 password=password,
             )
-
             # Login registered user & handle cart logic
             user = authenticate(request, username=username, password=password)
             merge_carts(request, user)
             if user is not None:
                 login(request, user)
-                return redirect(reverse("profile"))
+                messages.success(request, "Account created successfully.")
+                return HttpResponseClientRedirect(reverse("home"))
 
-        return render(request, "accounts/register.html", {"form": register_form})
+        return render(
+            request, "accounts/register_form.html", {"register_form": register_form}
+        )
 
 
 class UserLoginView(View):
     def get(self, request):
-        if request.user.is_authenticated:
-            return redirect(reverse("home"))
-
-        login_form = AuthenticationForm()
-        return render(request, "accounts/login.html", {"form": login_form})
+        return render(request, "accounts/login_form.html")
 
     def post(self, request):
         if request.user.is_authenticated:
-            return redirect(reverse("home"))
+            return HttpResponseClientRedirect(redirect_to=reverse("home"))
 
         # Login & Merge old cart with new Cart
         login_form = AuthenticationForm()
         username = request.POST.get("username")
-
         password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
 
-        merge_carts(request, user)
+        old_cart = Cart.objects.get_active_cart(request)
+
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+            Cart.objects.merge_carts(request, old_cart)
 
-            return redirect(reverse("profile"))
+            messages.success(request, "You are Logged in.")
+            return HttpResponseClientRedirect(redirect_to=reverse("home"))
         else:
             login_form = AuthenticationForm({"username": username, "password": ""})
-            return render(
-                request,
-                "accounts/login.html",
-                context={"form": login_form, "error": "Your credentials are invalid."},
-            )
+            messages.error(request, "Your credentials are invalid.")
+            return HttpResponse(status=204)
 
 
-class AddAddressView(LoginRequiredMixin, View):
+class UserLogoutView(View):
+    def post(self, request):
+        logout(request)
+        messages.success(request, "You are logged out.")
+        return redirect(reverse("home"))
+
+
+class AddressFormView(LoginRequiredMixin, View):
     def get(self, request):
-        address_form = AddressForm()
-        return render(request, "accounts/add_address.html", {"form": address_form})
+        address_form = forms.AddressForm()
+        return render(
+            request, "accounts/address_form.html", {"address_form": address_form}
+        )
 
     def post(self, request):
-        address_form = AddressForm(request.POST)
+        obj_id = request.POST["id"]
+        obj = Address.objects.get(pk=obj_id)
+        address_form = forms.AddressForm(instance=obj)
+        return render(
+            request,
+            "accounts/address_edit_form.html",
+            {"address_form": address_form, "address_id": obj_id},
+        )
+
+
+class AddressListView(LoginRequiredMixin, View):
+    def get(self, request):
+        address_list = request.user.addresses.all()
+        return render(
+            request,
+            "accounts/includes/address_list.html",
+            {"address_list": address_list},
+        )
+
+
+# Manage Single Addresses
+class AddressView(LoginRequiredMixin, View):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        address_form = forms.AddressForm(request.POST)
 
         if address_form.is_valid():
             new_address = address_form.save(commit=False)
@@ -184,20 +215,54 @@ class AddAddressView(LoginRequiredMixin, View):
             new_address.save()
 
             messages.success(request, "Address added successfully.")
-            return redirect(reverse("profile"))
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
 
-        return render(request, "accounts/add_address.html", {"form": address_form})
+        messages.error(request, "Please enter a valid address.")
+        return render(
+            request, "accounts/address_form.html", {"address_form": address_form}
+        )
 
+    def put(self, request):
+        data = QueryDict(request.body)
+        obj_id = data.get("address_id")
+        logger.info(obj_id)
 
-class DeleteAddressView(LoginRequiredMixin, View):
-    def post(self, request):
-        address_id = request.POST["address_id"]
-        address = Address.objects.get(pk=address_id)
-        address.delete()
+        obj = Address.objects.get(pk=obj_id)
+        address_form = forms.AddressForm(data, instance=obj)
+        if address_form.is_valid():
+            address_form.save()
+            messages.success(request, "Address updated successfully")
 
-        messages.success(request, "Address deleted successfully.")
-        return redirect("profile")
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
 
+        messages.error(request, "Failed to update address. Invalid input.")
+        return render(
+            request, "accounts/address_edit_form.html", {"address_form": address_form}
+        )
 
-class EditAddressView(View):
-    pass
+    def delete(self, request):
+        data = QueryDict(request.body)
+        obj_id = data.get("id")
+        obj = Address.objects.get(pk=obj_id)
+        if obj.user == request.user:
+            obj.delete()
+            messages.success(request, "Adderss deleted successfully.")
+            address_list = request.user.addresses.all()
+            return render(
+                request,
+                "accounts/includes/address_list.html",
+                {"address_list": address_list},
+            )
+        else:
+            messages.error(request, "You're not authorized.")
+            return HttpResponse(status=204)

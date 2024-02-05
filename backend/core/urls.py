@@ -4,16 +4,10 @@ from . import views
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="home"),
+    path("products", views.ProductListView.as_view(), name="products"),
     path(
-        "categories/<slug:slug>/",
-        views.ProductCategoryListView.as_view(),
-        name="category",
-    ),
-    path("products/", views.ProductListView.as_view(), name="product_list"),
-    path(
-        "products/<slug:slug>/",
+        "products/<slug:slug>",
         views.ProductDetailView.as_view(),
-        name="single_product",
+        name="single-product",
     ),
-    path("search/", views.SearchViewList.as_view(), name="search"),
 ]

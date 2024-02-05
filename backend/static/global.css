@@ -1,0 +1,41 @@
+.htmx-indicator {
+    display: none !important;
+}
+.htmx-request .htmx-indicator {
+    display: inline !important;
+}
+.htmx-request.htmx-indicator {
+    display: inline !important;
+}
+.htmx-request .btn-text {
+    display: none !important;
+}
+.htmx-request .htmx-content {
+    display: none !important;
+}
+
+.message-animation {
+    animation-name: messageAnimation;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes messageAnimation {
+    0% {
+        transform: translateX(100%);
+    }
+
+    10% {
+        transform: translateX(0%);
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}

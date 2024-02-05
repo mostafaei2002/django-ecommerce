@@ -1,0 +1,36 @@
+<div class="col-md-8 col-offset-2 mx-auto">
+      <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Info</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+              {% for order in orders %}
+                  <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td>{{order.items.count}} items on {{order.created_at}}</td>
+                      <td>{{order.status}}</td>
+                      <td>
+                        <a
+                          class="btn"
+                          href={% url "single-order" order.id %}
+                        >
+                          <span class="btn-text text-dark">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24px" height="24px">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                          </span>
+                          {% include "base/includes/htmx_mini_indicator.html" %}
+                        </a>
+                      </td>
+                      
+                  </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+</div>
