@@ -1,6 +1,6 @@
 {% for product in product_list %}
 <div class="col-md-4">
-    <a href="{% url "single_product" product.slug %}" class="text-decoration-none">
+    <a href="{% url "single-product" product.slug %}" class="text-decoration-none">
         <article class="card h-100">
             <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
             <div class="card-body">

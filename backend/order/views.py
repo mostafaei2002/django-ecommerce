@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
+from django_htmx.http import HttpResponseClientRedirect
+from shopping_cart.models import Cart
 
 from .models import Order, OrderItem
 
@@ -11,11 +13,11 @@ from .models import Order, OrderItem
 
 class OrdersView(View):
     def get(self, request, id):
+        # Return Single order or All orders
+
         order_obj = Order.objects.get(pk=id)
         address_list = request.user.addresses.all()
 
-        print("Hello world")
-        print(order_obj.user, request.user)
         if order_obj.user != request.user:
             return redirect(reverse("profile"))
 
@@ -29,24 +31,14 @@ class OrdersView(View):
         # User is authenticated or Is Not
         if request.user.is_authenticated:
             # Turn the active shopping cart into a pending Order
-            active_cart = request.user.carts.get(status="active")
-            active_cart.status = "ordered"
-            active_cart.save()
-            active_cart_items = active_cart.items.all()
-
-            new_order = Order(status="pending", user=request.user)
-            new_order.save()
-
-            for item in active_cart_items:
-                OrderItem.objects.create(
-                    price=item.price,
-                    quantity=item.quantity,
-                    order=new_order,
-                    product=item.product,
-                )
+            active_cart = Cart.objects.get_active_cart(request)
+            new_order = active_cart.submit_order()
 
             # Go to order checkout page where users can see an overview of the order and choose an address
-            return redirect(reverse("order-checkout", args=[new_order.id]))
+            messages.success(request, "Order submitted successfully.")
+            return HttpResponseClientRedirect(
+                redirect_to=reverse("single-order", args=[new_order.id])
+            )
         else:
             messages.error(
                 request, "Please login/register before submitting your order."

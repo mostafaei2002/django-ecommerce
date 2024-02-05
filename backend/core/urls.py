@@ -8,6 +8,6 @@ urlpatterns = [
     path(
         "products/<slug:slug>",
         views.ProductDetailView.as_view(),
-        name="single_product",
+        name="single-product",
     ),
 ]

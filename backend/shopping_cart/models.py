@@ -3,6 +3,7 @@ from core.models import Product
 from django.contrib import messages
 from django.core.validators import MinValueValidator
 from django.db import models
+from order.models import Order, OrderItem
 
 from . import managers
 
@@ -56,6 +57,21 @@ class Cart(models.Model):
             item.save()
 
         self.delete()
+
+    def submit_order(self):
+        new_order = Order.objects.create(status="pending", user=self.created_by)
+        for item in self.items.all():
+            OrderItem.objects.create(
+                price=item.price,
+                quantity=item.quantity,
+                order=new_order,
+                product=item.product,
+            )
+
+        self.status = "ordered"
+        self.save()
+
+        return new_order
 
 
 class CartItem(models.Model):

@@ -10,7 +10,8 @@ class CartManager(models.Manager):
 
     def get_active_cart(self, request):
         if request.user.is_authenticated:
-            return self.filter(created_by=request.user, status="active")[0]
+            cart, created = self.get_or_create(created_by=request.user, status="active")
+            return cart
         else:
             cart_id = request.session.get("active_cart", None)
             if cart_id:

@@ -6,7 +6,7 @@
             <div class="hstack gap-4 align-items-center justify-content-between">
                 
                     <h5 class="mb-0">
-                        <a class="text-dark text-decoration-none" href={% url "single_product" item.product.slug %}>{{item.product.title}}</a> ({{item.quantity}})</h5>
+                        <a class="text-dark text-decoration-none" href={% url "single-product" item.product.slug %}>{{item.product.title}}</a> ({{item.quantity}})</h5>
                 <form hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
                     <button
                         class="btn text-danger"
