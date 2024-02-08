@@ -14,7 +14,10 @@
 
 ## Other Commands
 
+Run the below commands inside backend folder
+
 -   Run `python manage.py createcategories 10` to create 10 test categories
 -   Run `python manage.py createproducts 100` to create 100 test products
 -   Run `python manage.py createreviews 500` to create 500 test reviews
 -   Run `python manage.py test` to run tests
+-   Run `python manage.py createsuperuser` to create an admin user
