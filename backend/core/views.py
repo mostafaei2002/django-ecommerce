@@ -19,7 +19,7 @@ logger = logging.getLogger("django")
 # Create your views here.
 class IndexView(View):
     def get(self, request):
-        top_level_categories = Category.objects.filter(parent_category=None)
+        top_level_categories = Category.objects.filter(parent_category=None)[:6]
         latest_products = Product.objects.all().order_by("-updated_at")[:6]
         top_selling = Product.objects.all().order_items("sales")[:6]
 

@@ -10,11 +10,7 @@ from django.http import HttpResponse, QueryDict
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django_htmx.http import (
-    HttpResponseClientRedirect,
-    HttpResponseClientRefresh,
-    trigger_client_event,
-)
+from django_htmx.http import HttpResponseClientRedirect, HttpResponseClientRefresh
 from shopping_cart.models import Cart, CartItem
 
 from . import forms
@@ -146,7 +142,6 @@ class UserLoginView(View):
             return HttpResponseClientRedirect(redirect_to=reverse("home"))
 
         # Login & Merge old cart with new Cart
-        login_form = AuthenticationForm()
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -161,7 +156,6 @@ class UserLoginView(View):
             messages.success(request, "You are Logged in.")
             return HttpResponseClientRedirect(redirect_to=reverse("home"))
         else:
-            login_form = AuthenticationForm({"username": username, "password": ""})
             messages.error(request, "Your credentials are invalid.")
             return HttpResponse(status=204)
 

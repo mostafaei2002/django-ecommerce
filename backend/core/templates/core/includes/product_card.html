@@ -1,0 +1,10 @@
+<a href="{% url "single-product" product.slug %}" class="text-decoration-none">
+    <article class="card h-100">
+        <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
+        <div class="card-body">
+            <h4 class="card-title">{{ product.title}}</h4>
+            <span class="fs-1 fw-bold">${{ product.price}}</span>
+            {% include "core/includes/star_rating.html" with rating=product.get_average_rating count=product.reviews.count %}
+        </div>
+    </article>
+</a>

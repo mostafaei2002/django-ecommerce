@@ -65,4 +65,25 @@
         </div>
     </section>
 </main>
+
+{% comment %} Styles for rating stars {% endcomment %}
+<style>
+.stars {
+    
+    display: inline-block;
+    font-size: 30px;
+    font-family: Times
+    line-height: 1;
+    
+    &::before {
+      content: '★★★★★';
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #ffc700 var(--percent), #ccc var(--percent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+    }
+  }
+</style>
 {% endblock %}

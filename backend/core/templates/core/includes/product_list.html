@@ -1,14 +1,6 @@
 {% for product in product_list %}
 <div class="col-md-4">
-    <a href="{% url "single-product" product.slug %}" class="text-decoration-none">
-        <article class="card h-100">
-            <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
-            <div class="card-body">
-                <h4 class="card-title">{{ product.title}}</h4>
-                <span class="fs-1 fw-bold">${{ product.price}}</span>
-            </div>
-        </article>
-    </a>
+    {% include "core/includes/product_card.html" %}
 </div>
 {% empty %}
 <p class="text-center">There are no Products available</p>

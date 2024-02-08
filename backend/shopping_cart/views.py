@@ -4,14 +4,13 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, reverse
 from django.views import View
 
-from .models import Cart, CartItem
+from .models import Cart
 
 # Create your views here.
 
 
 class CartView(View):
     def get(self, request):
-        user = request.user
         active_cart = Cart.objects.get_active_cart(request)
 
         return render(
@@ -38,7 +37,6 @@ class CartView(View):
 
     def delete(self, request):
         obj_id = request.GET.get("id", 0)
-        cart_item = CartItem.objects.get(pk=obj_id)
         active_cart = Cart.objects.get_active_cart(request)
         try:
             active_cart.delete_item(obj_id)

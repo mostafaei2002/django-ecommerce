@@ -37,15 +37,7 @@
             <div class="row g-2">
                 {% for product in top_selling %}
                     <div class="col-md-4">
-                        <a href="{% url "single-product" product.slug %}" class="text-decoration-none">
-                            <article class="card h-100">
-                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
-                                <div class="card-body">
-                                    <h4 class="card-title">{{ product.title}}</h4>
-                                    <span class="fs-1 fw-bold">${{ product.price}}</span>
-                                </div>
-                            </article>
-                        </a>
+                        {% include "core/includes/product_card.html" %}
                     </div>
                 {% endfor %}
             </div>
@@ -63,19 +55,32 @@
             <div class="row g-2">
                 {% for product in latest_products %}
                     <div class="col-md-4">
-                        <a href="{% url "single-product" product.slug %}" class="text-decoration-none">
-                            <article class="card h-100">
-                                <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.title }}" />
-                                <div class="card-body">
-                                    <h4 class="card-title">{{ product.title}}</h4>
-                                    <span class="fs-1 fw-bold">${{ product.price}}</span>
-                                </div>
-                            </article>
-                        </a>
+                        {% include "core/includes/product_card.html" %}
                     </div>
                 {% endfor %}
             </div>
         </div>
     </section>
 </main>
+
+{% comment %} Styles for rating stars {% endcomment %}
+<style>
+.stars {
+    
+    display: inline-block;
+    font-size: 30px;
+    font-family: Times
+    line-height: 1;
+    
+    &::before {
+      content: '★★★★★';
+      letter-spacing: 3px;
+      background: linear-gradient(90deg, #ffc700 var(--percent), #ccc var(--percent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+    }
+  }
+</style>
 {% endblock %}
