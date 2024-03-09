@@ -1,4 +1,8 @@
 # Full stack Django/Bootstrap Ecommerce app
+An ecommerce website built with django, bootstrap and HTMX with a focus on basic Django & HTMX capabiltiies. With features such a filtering products, sorting products, shopping cart, rating,unlimited scrolling,event based toast messages with htmx, reviews, basic query managers and some basic unit tests.
+
+## Short Demo on YouTube
+[![Short Demo](https://github.com/mostafaei2002/mostafaei2002.github.io/blob/main/src/images/django-ecommerce.png)](https://youtu.be/nAhxrejd-1s?si=ONzrTD9FLtnQx5QA)
 
 ## Usage With docker
 
