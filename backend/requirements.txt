@@ -14,4 +14,5 @@ setuptools==69.0.2
 six==1.16.0
 sqlparse==0.4.4
 typing_extensions==4.9.0
+tzdata==2025.2
 wheel==0.42.0

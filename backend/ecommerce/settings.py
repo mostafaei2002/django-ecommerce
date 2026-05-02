@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "clave_temporal_para_desarrollo")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("IS_DEVELOPMENT")
@@ -94,23 +94,26 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 
 if not DEBUG:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DATABASE_NAME"),
-            "USER": os.environ.get("DATABASE_USERNAME"),
-            "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
-            "HOST": os.environ.get("DATABASE_HOST"),
-            "PORT": os.environ.get("DATABASE_PORT"),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'ecommerce_db',  # nombre de tu base de datos
+            'USER': 'postgres',  # tu usuario de PostgreSQL
+            'PASSWORD': '300501',  # tu contraseña
+            'HOST': 'localhost',  # host de la DB
+            'PORT': '5432',  # puerto PostgreSQL
         }
     }
 else:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'ecommerce_db',  # nombre de tu base de datos
+            'USER': 'postgres',  # tu usuario
+            'PASSWORD': '300501',  # contraseña como cadena
+            'HOST': 'localhost',
+            'PORT': '5432',  # como cadena
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
